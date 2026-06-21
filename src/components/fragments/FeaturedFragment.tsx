@@ -30,7 +30,7 @@ export function FeaturedFragment({ fragment }: { fragment: FragmentCardData }) {
 
   return (
     <section className="relative">
-      <Link href={`/fragmentos/${fragment.slug}`} className="group block">
+      <Link href={`/fragmentos/${fragment.slug}`} className="group block active:opacity-90 transition-opacity">
         <div className="relative isolate flex min-h-[60vh] items-end overflow-hidden sm:min-h-[70vh]">
           <Image
             src={fragment.artworkImageUrl}

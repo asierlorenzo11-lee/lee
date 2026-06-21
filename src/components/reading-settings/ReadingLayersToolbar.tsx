@@ -34,7 +34,7 @@ export function ReadingLayersToolbar() {
               key={key}
               title="Comentario: siempre visible"
               style={{ backgroundColor: color, borderColor: color }}
-              className="inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-sm font-medium text-ink cursor-default select-none"
+              className="inline-flex items-center gap-1.5 rounded-full border px-3 py-2 text-sm font-medium text-ink cursor-default select-none"
             >
               {displayLabel}
             </span>
@@ -53,7 +53,7 @@ export function ReadingLayersToolbar() {
                 ? { backgroundColor: color, borderColor: color }
                 : { borderColor: color }
             }
-            className="inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-sm font-medium text-ink"
+            className="inline-flex items-center gap-1.5 rounded-full border px-3 py-2 text-sm font-medium text-ink"
           >
             {!active && (
               <span

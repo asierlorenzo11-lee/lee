@@ -20,13 +20,13 @@ export function ThemeToggle() {
     localStorage.setItem("lee-theme", next ? "dark" : "light");
   };
 
-  if (!mounted) return <div className="size-8" />;
+  if (!mounted) return <div className="size-11" />;
 
   return (
     <button
       onClick={toggle}
       aria-label={dark ? "Cambiar a modo claro" : "Cambiar a modo oscuro"}
-      className="flex size-8 items-center justify-center text-ink-soft transition-colors hover:text-ink"
+      className="flex size-11 items-center justify-center text-ink-soft transition-colors hover:text-ink"
     >
       {dark ? <Sun size={17} /> : <Moon size={17} />}
     </button>

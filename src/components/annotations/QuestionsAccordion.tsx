@@ -32,7 +32,7 @@ export function QuestionsAccordion({ annotations }: { annotations: FragmentAnnot
 
   return (
     <section className="mt-12">
-      <h2 className="mb-4 font-serif text-xl italic">Debate</h2>
+      <h2 className="mb-4 font-serif text-xl italic">Comentario</h2>
       <Accordion.Root type="multiple" className="space-y-2">
         {groups.map((group) => (
           <Accordion.Item

@@ -34,7 +34,7 @@ export function SidePanel({
             </Dialog.Description>
             <Dialog.Close
               aria-label="Cerrar"
-              className="rounded p-1 text-ink-soft hover:text-ink"
+              className="flex size-11 items-center justify-center rounded-full text-ink-soft hover:text-ink"
             >
               <X size={20} />
             </Dialog.Close>

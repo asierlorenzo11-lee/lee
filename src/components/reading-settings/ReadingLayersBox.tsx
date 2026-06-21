@@ -39,7 +39,7 @@ export function ReadingLayersBox() {
         <span
           title={fixed.description}
           style={ACTIVE_LAYER_STYLE[fixed.key]}
-          className="rounded-full px-3 py-1 text-sm text-ink cursor-default select-none"
+          className="rounded-full px-3 py-2 text-sm text-ink cursor-default select-none"
         >
           {fixed.label}
         </span>
@@ -55,7 +55,7 @@ export function ReadingLayersBox() {
               aria-pressed={active}
               title={layer.description}
               style={active ? ACTIVE_LAYER_STYLE[layer.key] : undefined}
-              className={`rounded-full px-3 py-1 text-sm text-ink transition-colors ${
+              className={`rounded-full px-3 py-2 text-sm text-ink transition-colors ${
                 active ? "" : "border border-line bg-paper text-ink-soft hover:text-ink"
               }`}
             >

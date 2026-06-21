@@ -343,6 +343,7 @@ export function ConstellationMap({ constellations }: Props) {
                       style={{ cursor: "pointer" }}
                       onMouseEnter={() => setHoveredFrag(fs.fragment.slug)}
                       onMouseLeave={() => setHoveredFrag(null)}
+                      onTouchStart={() => setHoveredFrag(fs.fragment.slug)}
                     >
                       {/* Halo */}
                       <circle
@@ -446,10 +447,10 @@ export function ConstellationMap({ constellations }: Props) {
         })}
       </svg>
 
-      {/* Hint */}
+      {/* Hint (desktop only — mobile shows "Toca una constelación" above) */}
       {!zoomed && (
         <p
-          className="absolute bottom-5 left-1/2 -translate-x-1/2 font-mono text-center pointer-events-none"
+          className="absolute bottom-5 left-1/2 -translate-x-1/2 font-mono text-center pointer-events-none hidden sm:block"
           style={{ fontSize: "0.6rem", letterSpacing: "0.18em", color: "rgba(180,200,255,0.3)", textTransform: "uppercase" }}
         >
           haz clic en una constelación para explorarla

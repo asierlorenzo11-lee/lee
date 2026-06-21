@@ -115,7 +115,7 @@ export function GlobalSearch() {
       <button
         onClick={() => setOpen(true)}
         aria-label="Buscar"
-        className="sm:hidden flex size-8 items-center justify-center text-ink-soft hover:text-ink"
+        className="sm:hidden flex size-11 items-center justify-center text-ink-soft hover:text-ink"
       >
         <Search size={18} />
       </button>
@@ -147,7 +147,7 @@ export function GlobalSearch() {
               {loading && (
                 <span className="size-4 rounded-full border-2 border-accent border-t-transparent animate-spin shrink-0" />
               )}
-              <button onClick={close} className="shrink-0 text-ink-soft hover:text-ink">
+              <button onClick={close} className="shrink-0 flex size-9 items-center justify-center text-ink-soft hover:text-ink">
                 <X size={17} />
               </button>
             </div>

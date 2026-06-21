@@ -15,7 +15,7 @@ export function NavMenu({ className }: { className?: string }) {
       <button
         type="button"
         onClick={() => setOpen(true)}
-        className={`flex items-center rounded-full p-2 text-ink hover:bg-paper-soft ${className ?? ""}`}
+        className={`flex size-11 items-center justify-center rounded-full text-ink hover:bg-paper-soft ${className ?? ""}`}
         aria-label="Abrir menú de navegación"
       >
         <Menu size={20} aria-hidden />

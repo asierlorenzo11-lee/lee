@@ -37,8 +37,8 @@ export const ANNOTATION_LAYERS: {
   },
   {
     key: "preguntas",
-    label: "Debate",
-    description: "Preguntas literales, interpretativas y valorativas.",
+    label: "Comentario",
+    description: "Preguntas literales, interpretativas y valorativas. Siempre visible.",
   },
   {
     key: "intertextualidad",
@@ -97,7 +97,7 @@ function readStoredState(): ReadingSettingsState {
     return {
       ...defaultState,
       ...parsed,
-      layers: { ...defaultState.layers, ...parsed.layers },
+      layers: { ...defaultState.layers, ...parsed.layers, preguntas: true },
     };
   } catch {
     return defaultState;
@@ -148,6 +148,7 @@ export function ReadingSettingsProvider({
   }, [state.textSize, state.contrast, state.readingFont]);
 
   const toggleLayer = useCallback((layer: AnnotationLayer) => {
+    if (layer === "preguntas") return; // Comentario siempre activo
     setSettings((current) => ({
       ...current,
       layers: { ...current.layers, [layer]: !current.layers[layer] },

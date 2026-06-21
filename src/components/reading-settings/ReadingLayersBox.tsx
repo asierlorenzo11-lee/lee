@@ -7,12 +7,6 @@ import {
   type AnnotationLayer,
 } from "./ReadingSettingsProvider";
 
-/**
- * Estilo de fondo de cada botón cuando su capa está activa, sincronizado
- * exactamente con el color de resaltado que recibe el texto anotado
- * (ver `.gloss-highlight`, `.context-highlight`, `.figure-highlight`,
- * `.intertext-highlight` en globals.css).
- */
 const ACTIVE_LAYER_STYLE: Record<AnnotationLayer, CSSProperties> = {
   glosa: { backgroundColor: "var(--color-layer-glosa)" },
   contexto: { backgroundColor: "var(--color-layer-contexto)" },
@@ -28,13 +22,30 @@ const ACTIVE_LAYER_STYLE: Record<AnnotationLayer, CSSProperties> = {
 export function ReadingLayersBox() {
   const settings = useReadingSettings();
 
+  const toggleable = ANNOTATION_LAYERS.filter((l) => l.key !== "preguntas");
+  const fixed = ANNOTATION_LAYERS.find((l) => l.key === "preguntas")!;
+
   return (
     <section className="rounded-lg border border-line bg-paper-soft p-4">
-      <h3 className="mb-3 text-xs font-semibold tracking-wide text-ink-soft uppercase">
+      <h3 className="mb-1 text-xs font-semibold tracking-wide text-ink-soft uppercase">
         Capas de lectura
       </h3>
+      <p className="mb-3 text-xs text-ink-soft leading-snug">
+        Activa las anotaciones que quieres ver mientras lees el texto.
+      </p>
+
       <div className="flex flex-wrap gap-2">
-        {ANNOTATION_LAYERS.map((layer) => {
+        {/* Capa fija: Comentario — siempre visible, no se puede desactivar */}
+        <span
+          title={fixed.description}
+          style={ACTIVE_LAYER_STYLE[fixed.key]}
+          className="rounded-full px-3 py-1 text-sm text-ink cursor-default select-none"
+        >
+          {fixed.label}
+        </span>
+
+        {/* Capas activables */}
+        {toggleable.map((layer) => {
           const active = settings.layers[layer.key];
           return (
             <button

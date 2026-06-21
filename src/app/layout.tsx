@@ -84,10 +84,7 @@ export default function RootLayout({
             <SectionAccentWrapper>{children}</SectionAccentWrapper>
           </main>
           <footer className="border-t border-line px-4 py-8 text-center text-sm text-ink-soft">
-            <p>
-              «LEE» — Literatura en español. Antología digital comentada, de
-              acceso libre. Sin registro, sin cookies de seguimiento.
-            </p>
+            <p>¡LEE! Antología digital comentada. Asier Lorenzo García</p>
           </footer>
         </ReadingSettingsProvider>
       </body>

@@ -150,10 +150,15 @@ async function main() {
   // Join tables (todos los padres ya existen)
   let joinCount = 0;
   let joinSkipped = 0;
+  // Column order: A = first model alphabetically, B = second
+  // _FragmentConstellations: A=Constellation, B=Fragment  (C < F)
+  // _FragmentCharacters:     A=Character,     B=Fragment  (C < F)
+  // _FragmentTopics:         A=Fragment,      B=Topic     (F < T)
+  // _FragmentPlaces:         A=Fragment,      B=Place     (F < P)
   for (const c of constellations) {
     for (const f of c.fragments) {
       if (!fragmentIds.has(f.id)) { joinSkipped++; continue; }
-      await exec(`INSERT INTO _FragmentConstellations (A,B) VALUES (?,?)`, [f.id, c.id], true);
+      await exec(`INSERT INTO _FragmentConstellations (A,B) VALUES (?,?)`, [c.id, f.id], true);
       joinCount++;
     }
   }
@@ -167,7 +172,7 @@ async function main() {
   for (const c of characters) {
     for (const f of c.fragments) {
       if (!fragmentIds.has(f.id)) { joinSkipped++; continue; }
-      await exec(`INSERT INTO _FragmentCharacters (A,B) VALUES (?,?)`, [f.id, c.id], true);
+      await exec(`INSERT INTO _FragmentCharacters (A,B) VALUES (?,?)`, [c.id, f.id], true);
       joinCount++;
     }
   }

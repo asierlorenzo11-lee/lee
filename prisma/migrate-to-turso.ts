@@ -20,45 +20,84 @@ if (!tursoUrl || !tursoToken) {
 }
 const turso = createClient({ url: tursoUrl, authToken: tursoToken });
 
-async function exec(sql: string, args: unknown[] = []) {
-  await turso.execute({ sql, args: args as import("@libsql/client").InArgs });
+async function exec(sql: string, args: unknown[] = [], ignore = false) {
+  try {
+    await turso.execute({ sql, args: args as import("@libsql/client").InArgs });
+  } catch (e: unknown) {
+    const msg = e instanceof Error ? e.message : String(e);
+    if (ignore) {
+      console.warn(`  ⚠ SKIP: ${msg} | args=${JSON.stringify(args).slice(0,120)}`);
+    } else {
+      console.error(`  ✗ FAIL: ${msg} | sql=${sql.slice(0,60)} | args=${JSON.stringify(args).slice(0,120)}`);
+      throw e;
+    }
+  }
 }
 
 async function main() {
+  // ── 1. Leer todos los datos locales primero ──────────────────────────────
   console.log("🔄 Leyendo datos locales…");
+  const authors       = await local.author.findMany();
+  const works         = await local.work.findMany();
+  const fragments     = await local.fragment.findMany();
+  const constellations = await local.constellation.findMany({ include: { fragments: true } });
+  const topics        = await local.topic.findMany({ include: { fragments: true } });
+  const characters    = await local.character.findMany({ include: { fragments: true } });
+  const places        = await local.place.findMany({ include: { fragments: true } });
+  const itineraries   = await local.itinerary.findMany({ include: { items: true } });
+  const annotations   = await local.annotation.findMany();
 
-  // ── Schema: push via Prisma first (run `prisma db push` with TURSO env vars before this script) ──
+  console.log(`  ${authors.length} autores, ${works.length} obras, ${fragments.length} fragmentos`);
+  console.log(`  ${constellations.length} constelaciones, ${topics.length} tópicos, ${characters.length} personajes`);
+  console.log(`  ${places.length} lugares, ${itineraries.length} itinerarios, ${annotations.length} anotaciones`);
 
-  // Authors
-  const authors = await local.author.findMany();
-  console.log(`  → ${authors.length} autores`);
+  // ── 2. Limpiar Turso en orden inverso de dependencias ───────────────────
+  console.log("\n🗑  Limpiando Turso (orden FK-safe)…");
+  await exec("DELETE FROM _FragmentConstellations");
+  await exec("DELETE FROM _FragmentTopics");
+  await exec("DELETE FROM _FragmentCharacters");
+  await exec("DELETE FROM _FragmentPlaces");
+  await exec("DELETE FROM ItineraryFragment");
+  await exec("DELETE FROM Annotation");
+  await exec("DELETE FROM Fragment");
+  await exec("DELETE FROM Work");
+  await exec("DELETE FROM Itinerary");
+  await exec("DELETE FROM Constellation");
+  await exec("DELETE FROM Topic");
+  await exec("DELETE FROM Character");
+  await exec("DELETE FROM Place");
+  await exec("DELETE FROM Author");
+  console.log("  ✓ Tablas vaciadas");
+
+  // ── 3. Insertar en orden FK-safe (padres antes que hijos) ───────────────
+  console.log("\n📥 Insertando datos…");
+
+  // Authors (sin FK salientes)
   for (const a of authors) {
     await exec(
-      `INSERT OR REPLACE INTO Author (id,slug,name,birthYear,deathYear,country,era,bio,portraitUrl)
+      `INSERT INTO Author (id,slug,name,birthYear,deathYear,country,era,bio,portraitUrl)
        VALUES (?,?,?,?,?,?,?,?,?)`,
       [a.id, a.slug, a.name, a.birthYear ?? null, a.deathYear ?? null,
        a.country ?? null, a.era ?? null, a.bio, a.portraitUrl ?? null]
     );
   }
+  console.log(`  ✓ ${authors.length} autores`);
 
-  // Works
-  const works = await local.work.findMany();
-  console.log(`  → ${works.length} obras`);
+  // Works (FK → Author)
   for (const w of works) {
     await exec(
-      `INSERT OR REPLACE INTO Work (id,slug,title,translatedTitle,year,era,genre,synopsis,coverImageUrl,authorId)
+      `INSERT INTO Work (id,slug,title,translatedTitle,year,era,genre,synopsis,coverImageUrl,authorId)
        VALUES (?,?,?,?,?,?,?,?,?,?)`,
       [w.id, w.slug, w.title, w.translatedTitle ?? null, w.year ?? null,
        w.era ?? null, w.genre, w.synopsis, w.coverImageUrl ?? null, w.authorId]
     );
   }
+  console.log(`  ✓ ${works.length} obras`);
 
-  // Fragments
-  const fragments = await local.fragment.findMany();
-  console.log(`  → ${fragments.length} fragmentos`);
+  // Fragments (FK → Work)
   for (const f of fragments) {
     await exec(
-      `INSERT OR REPLACE INTO Fragment
+      `INSERT INTO Fragment
        (id,slug,title,location,headline,text,\`order\`,status,featured,featuredDate,
         audioUrl,artworkImageUrl,artworkTitle,artworkAuthor,artworkCaption,workId)
        VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
@@ -68,71 +107,97 @@ async function main() {
        f.artworkAuthor ?? null, f.artworkCaption ?? null, f.workId]
     );
   }
+  console.log(`  ✓ ${fragments.length} fragmentos`);
 
-  // Constellations
-  const constellations = await local.constellation.findMany({ include: { fragments: true } });
-  console.log(`  → ${constellations.length} constelaciones`);
+  // Constellations (sin FK salientes)
   for (const c of constellations) {
-    await exec(`INSERT OR REPLACE INTO Constellation (id,slug,name) VALUES (?,?,?)`,
+    await exec(`INSERT INTO Constellation (id,slug,name) VALUES (?,?,?)`,
       [c.id, c.slug, c.name]);
-    for (const f of c.fragments) {
-      await exec(`INSERT OR REPLACE INTO _FragmentConstellations (A,B) VALUES (?,?)`, [f.id, c.id]);
-    }
   }
+  console.log(`  ✓ ${constellations.length} constelaciones`);
 
   // Topics
-  const topics = await local.topic.findMany({ include: { fragments: true } });
-  console.log(`  → ${topics.length} tópicos`);
   for (const t of topics) {
-    await exec(`INSERT OR REPLACE INTO Topic (id,slug,name,description) VALUES (?,?,?,?)`,
+    await exec(`INSERT INTO Topic (id,slug,name,description) VALUES (?,?,?,?)`,
       [t.id, t.slug, t.name, t.description ?? null]);
-    for (const f of t.fragments) {
-      await exec(`INSERT OR REPLACE INTO _FragmentTopics (A,B) VALUES (?,?)`, [f.id, t.id]);
-    }
   }
+  console.log(`  ✓ ${topics.length} tópicos`);
 
   // Characters
-  const characters = await local.character.findMany({ include: { fragments: true } });
-  console.log(`  → ${characters.length} personajes`);
   for (const c of characters) {
-    await exec(`INSERT OR REPLACE INTO Character (id,slug,name) VALUES (?,?,?)`,
+    await exec(`INSERT INTO Character (id,slug,name) VALUES (?,?,?)`,
       [c.id, c.slug, c.name]);
-    for (const f of c.fragments) {
-      await exec(`INSERT OR REPLACE INTO _FragmentCharacters (A,B) VALUES (?,?)`, [f.id, c.id]);
-    }
   }
+  console.log(`  ✓ ${characters.length} personajes`);
 
   // Places
-  const places = await local.place.findMany({ include: { fragments: true } });
-  console.log(`  → ${places.length} lugares`);
   for (const p of places) {
-    await exec(`INSERT OR REPLACE INTO Place (id,slug,name,lat,lng,description) VALUES (?,?,?,?,?,?)`,
+    await exec(`INSERT INTO Place (id,slug,name,lat,lng,description) VALUES (?,?,?,?,?,?)`,
       [p.id, p.slug, p.name, p.lat, p.lng, p.description ?? null]);
-    for (const f of p.fragments) {
-      await exec(`INSERT OR REPLACE INTO _FragmentPlaces (A,B) VALUES (?,?)`, [f.id, p.id]);
-    }
   }
+  console.log(`  ✓ ${places.length} lugares`);
 
   // Itineraries
-  const itineraries = await local.itinerary.findMany({ include: { items: true } });
-  console.log(`  → ${itineraries.length} itinerarios`);
   for (const it of itineraries) {
-    await exec(`INSERT OR REPLACE INTO Itinerary (id,slug,title,description,\`order\`) VALUES (?,?,?,?,?)`,
+    await exec(`INSERT INTO Itinerary (id,slug,title,description,\`order\`) VALUES (?,?,?,?,?)`,
       [it.id, it.slug, it.title, it.description, it.order]);
-    for (const item of it.items) {
-      await exec(
-        `INSERT OR REPLACE INTO ItineraryFragment (itineraryId,fragmentId,\`order\`) VALUES (?,?,?)`,
-        [item.itineraryId, item.fragmentId, item.order]
-      );
+  }
+  console.log(`  ✓ ${itineraries.length} itinerarios`);
+
+  // Índice de fragmentos insertados para validar antes de insertar join
+  const fragmentIds = new Set(fragments.map(f => f.id));
+
+  // Join tables (todos los padres ya existen)
+  let joinCount = 0;
+  let joinSkipped = 0;
+  for (const c of constellations) {
+    for (const f of c.fragments) {
+      if (!fragmentIds.has(f.id)) { joinSkipped++; continue; }
+      await exec(`INSERT INTO _FragmentConstellations (A,B) VALUES (?,?)`, [f.id, c.id], true);
+      joinCount++;
     }
   }
+  for (const t of topics) {
+    for (const f of t.fragments) {
+      if (!fragmentIds.has(f.id)) { joinSkipped++; continue; }
+      await exec(`INSERT INTO _FragmentTopics (A,B) VALUES (?,?)`, [f.id, t.id], true);
+      joinCount++;
+    }
+  }
+  for (const c of characters) {
+    for (const f of c.fragments) {
+      if (!fragmentIds.has(f.id)) { joinSkipped++; continue; }
+      await exec(`INSERT INTO _FragmentCharacters (A,B) VALUES (?,?)`, [f.id, c.id], true);
+      joinCount++;
+    }
+  }
+  for (const p of places) {
+    for (const f of p.fragments) {
+      if (!fragmentIds.has(f.id)) { joinSkipped++; continue; }
+      await exec(`INSERT INTO _FragmentPlaces (A,B) VALUES (?,?)`, [f.id, p.id], true);
+      joinCount++;
+    }
+  }
+  if (joinSkipped > 0) console.warn(`  ⚠ ${joinSkipped} relaciones omitidas (fragmento no encontrado)`);
+  console.log(`  ✓ ${joinCount} relaciones many-to-many`);
+
+  // ItineraryFragment
+  let ifCount = 0;
+  for (const it of itineraries) {
+    for (const item of it.items) {
+      await exec(
+        `INSERT INTO ItineraryFragment (itineraryId,fragmentId,\`order\`) VALUES (?,?,?)`,
+        [item.itineraryId, item.fragmentId, item.order], true
+      );
+      ifCount++;
+    }
+  }
+  console.log(`  ✓ ${ifCount} entradas de itinerario`);
 
   // Annotations
-  const annotations = await local.annotation.findMany();
-  console.log(`  → ${annotations.length} anotaciones`);
   for (const a of annotations) {
     await exec(
-      `INSERT OR REPLACE INTO Annotation
+      `INSERT INTO Annotation
        (id,fragmentId,type,anchorStart,anchorEnd,category,questionGroup,\`order\`,
         content,linkType,linkTargetFragmentId,externalUrl,externalCitation)
        VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)`,
@@ -142,6 +207,7 @@ async function main() {
        a.externalUrl ?? null, a.externalCitation ?? null]
     );
   }
+  console.log(`  ✓ ${annotations.length} anotaciones`);
 
   console.log("\n✅ Migración completada.");
   await local.$disconnect();

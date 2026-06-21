@@ -1,3 +1,5 @@
+export const revalidate = 3600;
+
 import type { Metadata } from "next";
 import { getConstellationsForMap } from "@/lib/queries";
 import { ConstellationMap } from "@/components/constelaciones/ConstellationMap";

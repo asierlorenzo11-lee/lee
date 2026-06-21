@@ -1,3 +1,4 @@
+import { unstable_cache } from "next/cache";
 import { prisma } from "./db";
 import { Prisma } from "@/generated/prisma/client";
 
@@ -106,40 +107,49 @@ export async function getRelatedFragments(fragment: FragmentDetail, take = 3) {
 }
 
 /** El fragmento destacado más reciente para la portada. */
-export async function getFeaturedFragment() {
-  return prisma.fragment.findFirst({
-    where: { status: "published", featured: true },
-    orderBy: { featuredDate: "desc" },
-    include: fragmentWithWorkInclude,
-  });
-}
+export const getFeaturedFragment = unstable_cache(
+  async () =>
+    prisma.fragment.findFirst({
+      where: { status: "published", featured: true },
+      orderBy: { featuredDate: "desc" },
+      include: fragmentWithWorkInclude,
+    }),
+  ["featured-fragment"],
+  { revalidate: 3600 }
+);
 
 /** Fragmentos publicados para el mosaico de la portada (o catálogos generales). */
-export async function getPublishedFragments(options?: { excludeId?: string; take?: number }) {
-  return prisma.fragment.findMany({
-    where: {
-      status: "published",
-      ...(options?.excludeId ? { id: { not: options.excludeId } } : {}),
-    },
-    orderBy: [{ work: { year: "asc" } }, { order: "asc" }],
-    take: options?.take,
-    include: fragmentWithWorkInclude,
-  });
-}
+export const getPublishedFragments = unstable_cache(
+  async (options?: { excludeId?: string; take?: number }) =>
+    prisma.fragment.findMany({
+      where: {
+        status: "published",
+        ...(options?.excludeId ? { id: { not: options.excludeId } } : {}),
+      },
+      orderBy: [{ work: { year: "asc" } }, { order: "asc" }],
+      take: options?.take,
+      include: fragmentWithWorkInclude,
+    }),
+  ["published-fragments"],
+  { revalidate: 3600 }
+);
 
 // ---------------------------------------------------------------------------
 // Obras
 // ---------------------------------------------------------------------------
 
-export async function getAllWorks() {
-  return prisma.work.findMany({
-    include: {
-      author: true,
-      fragments: { where: { status: "published" }, select: { id: true } },
-    },
-    orderBy: { year: "asc" },
-  });
-}
+export const getAllWorks = unstable_cache(
+  async () =>
+    prisma.work.findMany({
+      include: {
+        author: true,
+        fragments: { where: { status: "published" }, select: { id: true } },
+      },
+      orderBy: { year: "asc" },
+    }),
+  ["all-works"],
+  { revalidate: 3600 }
+);
 
 export async function getWorkBySlug(slug: string) {
   return prisma.work.findUnique({
@@ -155,16 +165,19 @@ export async function getWorkBySlug(slug: string) {
 // Autores
 // ---------------------------------------------------------------------------
 
-export async function getAllAuthors() {
-  return prisma.author.findMany({
-    include: {
-      works: {
-        include: { fragments: { where: { status: "published" }, select: { id: true } } },
+export const getAllAuthors = unstable_cache(
+  async () =>
+    prisma.author.findMany({
+      include: {
+        works: {
+          include: { fragments: { where: { status: "published" }, select: { id: true } } },
+        },
       },
-    },
-    orderBy: { birthYear: "asc" },
-  });
-}
+      orderBy: { birthYear: "asc" },
+    }),
+  ["all-authors"],
+  { revalidate: 3600 }
+);
 
 export async function getAuthorBySlug(slug: string) {
   return prisma.author.findUnique({
@@ -220,32 +233,41 @@ export interface FragmentIndexFilters {
 }
 
 export async function getFragmentsIndex(filters: FragmentIndexFilters) {
-  return prisma.fragment.findMany({
-    where: {
-      status: "published",
-      ...(filters.constelacion
-        ? { constellations: { some: { slug: filters.constelacion } } }
-        : {}),
-      ...(filters.topico ? { topics: { some: { slug: filters.topico } } } : {}),
-      ...(filters.personaje ? { characters: { some: { slug: filters.personaje } } } : {}),
-      ...(filters.autor ? { work: { author: { slug: filters.autor } } } : {}),
-      ...(filters.epoca ? { work: { author: { era: filters.epoca } } } : {}),
-      ...(filters.itinerario
-        ? { itineraryItems: { some: { itinerary: { slug: filters.itinerario } } } }
-        : {}),
-    },
-    orderBy: [{ work: { year: "asc" } }, { order: "asc" }],
-    include: fragmentWithWorkInclude,
-  });
+  const cacheKey = JSON.stringify(filters);
+  return unstable_cache(
+    () =>
+      prisma.fragment.findMany({
+        where: {
+          status: "published",
+          ...(filters.constelacion
+            ? { constellations: { some: { slug: filters.constelacion } } }
+            : {}),
+          ...(filters.topico ? { topics: { some: { slug: filters.topico } } } : {}),
+          ...(filters.personaje ? { characters: { some: { slug: filters.personaje } } } : {}),
+          ...(filters.autor ? { work: { author: { slug: filters.autor } } } : {}),
+          ...(filters.epoca ? { work: { author: { era: filters.epoca } } } : {}),
+          ...(filters.itinerario
+            ? { itineraryItems: { some: { itinerary: { slug: filters.itinerario } } } }
+            : {}),
+        },
+        orderBy: [{ work: { year: "asc" } }, { order: "asc" }],
+        include: fragmentWithWorkInclude,
+      }),
+    ["fragments-index", cacheKey],
+    { revalidate: 3600 }
+  )();
 }
 
-export async function getAuthorsWithFragments() {
-  return prisma.author.findMany({
-    where: { works: { some: { fragments: { some: { status: "published" } } } } },
-    select: { slug: true, name: true },
-    orderBy: { birthYear: "asc" },
-  });
-}
+export const getAuthorsWithFragments = unstable_cache(
+  async () =>
+    prisma.author.findMany({
+      where: { works: { some: { fragments: { some: { status: "published" } } } } },
+      select: { slug: true, name: true },
+      orderBy: { birthYear: "asc" },
+    }),
+  ["authors-with-fragments"],
+  { revalidate: 3600 }
+);
 
 const ERA_ORDER = [
   "Al-Ándalus",
@@ -299,12 +321,16 @@ function sortItineraries<T extends { slug: string }>(items: T[]): T[] {
   });
 }
 
-export async function getAllItineraries() {
-  const rows = await prisma.itinerary.findMany({
-    include: { items: { select: { fragmentId: true } } },
-  });
-  return sortItineraries(rows);
-}
+export const getAllItineraries = unstable_cache(
+  async () => {
+    const rows = await prisma.itinerary.findMany({
+      include: { items: { select: { fragmentId: true } } },
+    });
+    return sortItineraries(rows);
+  },
+  ["all-itineraries"],
+  { revalidate: 3600 }
+);
 
 export async function getAllItinerariesWithItems() {
   const rows = await prisma.itinerary.findMany({
@@ -342,12 +368,15 @@ export async function getItineraryBySlug(slug: string) {
 // Tópicos, personajes, constelaciones
 // ---------------------------------------------------------------------------
 
-export async function getAllTopics() {
-  return prisma.topic.findMany({
-    include: { fragments: { where: { status: "published" }, select: { id: true } } },
-    orderBy: { name: "asc" },
-  });
-}
+export const getAllTopics = unstable_cache(
+  async () =>
+    prisma.topic.findMany({
+      include: { fragments: { where: { status: "published" }, select: { id: true } } },
+      orderBy: { name: "asc" },
+    }),
+  ["all-topics"],
+  { revalidate: 3600 }
+);
 
 export async function getTopicBySlug(slug: string) {
   return prisma.topic.findUnique({
@@ -358,12 +387,15 @@ export async function getTopicBySlug(slug: string) {
   });
 }
 
-export async function getAllCharacters() {
-  return prisma.character.findMany({
-    include: { fragments: { where: { status: "published" }, select: { id: true } } },
-    orderBy: { name: "asc" },
-  });
-}
+export const getAllCharacters = unstable_cache(
+  async () =>
+    prisma.character.findMany({
+      include: { fragments: { where: { status: "published" }, select: { id: true } } },
+      orderBy: { name: "asc" },
+    }),
+  ["all-characters"],
+  { revalidate: 3600 }
+);
 
 export async function getCharacterBySlug(slug: string) {
   return prisma.character.findUnique({
@@ -374,12 +406,15 @@ export async function getCharacterBySlug(slug: string) {
   });
 }
 
-export async function getAllConstellations() {
-  return prisma.constellation.findMany({
-    include: { fragments: { where: { status: "published" }, select: { id: true } } },
-    orderBy: { name: "asc" },
-  });
-}
+export const getAllConstellations = unstable_cache(
+  async () =>
+    prisma.constellation.findMany({
+      include: { fragments: { where: { status: "published" }, select: { id: true } } },
+      orderBy: { name: "asc" },
+    }),
+  ["all-constellations"],
+  { revalidate: 3600 }
+);
 
 export async function getConstellationBySlug(slug: string) {
   return prisma.constellation.findUnique({
@@ -477,32 +512,36 @@ export async function getAllPlaces() {
 // Constelaciones — mapa interactivo
 // ---------------------------------------------------------------------------
 
-export async function getConstellationsForMap() {
-  const raw = await prisma.constellation.findMany({
-    include: {
-      fragments: {
-        where: { status: "published" },
-        select: {
-          slug: true,
-          title: true,
-          work: { select: { author: { select: { name: true } } } },
+export const getConstellationsForMap = unstable_cache(
+  async () => {
+    const raw = await prisma.constellation.findMany({
+      include: {
+        fragments: {
+          where: { status: "published" },
+          select: {
+            slug: true,
+            title: true,
+            work: { select: { author: { select: { name: true } } } },
+          },
+          orderBy: { order: "asc" },
+          take: 10,
         },
-        orderBy: { order: "asc" },
-        take: 10,
       },
-    },
-    orderBy: { name: "asc" },
-  });
-  return raw.map((c) => ({
-    slug: c.slug,
-    name: c.name,
-    fragments: c.fragments.map((f) => ({
-      slug: f.slug,
-      title: f.title,
-      author: f.work.author.name,
-    })),
-  }));
-}
+      orderBy: { name: "asc" },
+    });
+    return raw.map((c) => ({
+      slug: c.slug,
+      name: c.name,
+      fragments: c.fragments.map((f) => ({
+        slug: f.slug,
+        title: f.title,
+        author: f.work.author.name,
+      })),
+    }));
+  },
+  ["constellations-for-map"],
+  { revalidate: 3600 }
+);
 
 // ---------------------------------------------------------------------------
 // Búsqueda global (fragmentos + autores + obras)

@@ -1,3 +1,5 @@
+export const revalidate = 3600;
+
 import type { Metadata } from "next";
 import { getAllPlaces } from "@/lib/queries";
 import { FragmentGrid } from "@/components/fragments/FragmentGrid";

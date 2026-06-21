@@ -1,3 +1,5 @@
+export const revalidate = 3600;
+
 import type { Metadata } from "next";
 import { getAllAuthors } from "@/lib/queries";
 import { SectionHeader } from "@/components/layout/SectionHeader";

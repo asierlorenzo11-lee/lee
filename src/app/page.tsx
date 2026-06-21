@@ -6,6 +6,8 @@ import { FeaturedFragment } from "@/components/fragments/FeaturedFragment";
 import { FadeUp } from "@/components/ui/FadeUp";
 import { FACETS } from "@/lib/facets";
 
+export const revalidate = 3600;
+
 export const metadata: Metadata = {
   description:
     "Antología digital comentada de literatura en español: fragmentos elegidos, glosados y puestos en contexto, de la Edad Media a nuestros días.",

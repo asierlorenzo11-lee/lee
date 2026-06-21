@@ -1,0 +1,193 @@
+// LEE — Literatura en español
+// Modelo de datos: Autores, Obras, Fragmentos, Anotaciones (5 capas),
+// y las facetas de exploración (constelaciones, personajes, tópicos,
+// itinerarios, lugares).
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+model Author {
+  id          String  @id @default(cuid())
+  slug        String  @unique
+  name        String
+  birthYear   Int?
+  deathYear   Int?
+  country     String?
+  era         String?
+  bio         String
+  portraitUrl String?
+
+  works Work[]
+}
+
+model Work {
+  id              String  @id @default(cuid())
+  slug            String  @unique
+  title           String
+  translatedTitle String?
+  year            Int?
+  era             String?
+  genre           String
+  synopsis        String
+  coverImageUrl   String?
+
+  authorId String
+  author   Author @relation(fields: [authorId], references: [id])
+
+  fragments Fragment[]
+
+  @@index([authorId])
+}
+
+model Fragment {
+  id    String @id @default(cuid())
+  slug  String @unique
+  title String
+
+  // Localización dentro de la obra (acto, capítulo, canto, página...)
+  location String
+
+  // Línea ingeniosa de 3-8 palabras, al estilo Historia-Arte
+  headline String
+
+  // Texto completo del fragmento (las anotaciones se anclan a offsets de este texto)
+  text String
+
+  // Orden de lectura sugerido dentro de la obra
+  order Int @default(0)
+
+  // draft | published — los borradores no aparecen públicamente
+  status String @default("draft")
+
+  featured     Boolean   @default(false)
+  featuredDate DateTime?
+
+  audioUrl String?
+
+  // Obra de arte relacionada
+  artworkImageUrl String?
+  artworkTitle    String?
+  artworkAuthor   String?
+  artworkCaption  String?
+
+  workId String
+  work   Work   @relation(fields: [workId], references: [id])
+
+  annotations Annotation[]
+
+  constellations Constellation[]     @relation("FragmentConstellations")
+  characters     Character[]         @relation("FragmentCharacters")
+  topics         Topic[]             @relation("FragmentTopics")
+  places         Place[]             @relation("FragmentPlaces")
+  itineraryItems ItineraryFragment[]
+
+  // Fragmentos enlazados desde anotaciones de intertextualidad de otros fragmentos
+  linkedFrom Annotation[] @relation("IntertextualidadTarget")
+
+  @@index([workId])
+  @@index([status])
+}
+
+model Constellation {
+  id   String @id @default(cuid())
+  slug String @unique
+  name String
+
+  fragments Fragment[] @relation("FragmentConstellations")
+}
+
+model Character {
+  id   String @id @default(cuid())
+  slug String @unique
+  name String
+
+  fragments Fragment[] @relation("FragmentCharacters")
+}
+
+model Topic {
+  id          String  @id @default(cuid())
+  slug        String  @unique
+  name        String
+  description String?
+
+  fragments Fragment[] @relation("FragmentTopics")
+}
+
+model Place {
+  id          String  @id @default(cuid())
+  slug        String  @unique
+  name        String
+  lat         Float
+  lng         Float
+  description String?
+
+  fragments Fragment[] @relation("FragmentPlaces")
+}
+
+model Itinerary {
+  id          String @id @default(cuid())
+  slug        String @unique
+  title       String
+  description String
+  order       Int    @default(0)
+
+  items ItineraryFragment[]
+}
+
+model ItineraryFragment {
+  itineraryId String
+  itinerary   Itinerary @relation(fields: [itineraryId], references: [id])
+
+  fragmentId String
+  fragment   Fragment @relation(fields: [fragmentId], references: [id])
+
+  order Int @default(0)
+
+  @@id([itineraryId, fragmentId])
+  @@index([fragmentId])
+}
+
+// Las cinco capas de anotación: glosa | contexto | figura | pregunta | intertextualidad
+model Annotation {
+  id String @id @default(cuid())
+
+  fragmentId String
+  fragment   Fragment @relation(fields: [fragmentId], references: [id])
+
+  type String
+
+  // Posición (offsets de carácter sobre Fragment.text) a la que se ancla la anotación.
+  // No se usa en anotaciones de fragmento completo (p.ej. "pregunta").
+  anchorStart Int?
+  anchorEnd   Int?
+
+  // Para type = "figura": tropo | topos | sintaxis | sonoro
+  category String?
+
+  // Para type = "pregunta": literal | interpretativo | valorativo
+  questionGroup String?
+
+  // Orden de presentación dentro de su grupo (preguntas, leyenda de figuras...)
+  order Int @default(0)
+
+  // Contenido enriquecido (markdown): definición, contexto, identificación, pregunta...
+  content String
+
+  // Para type = "intertextualidad": internal | external
+  linkType String?
+
+  linkTargetFragmentId String?
+  linkTargetFragment   Fragment? @relation("IntertextualidadTarget", fields: [linkTargetFragmentId], references: [id])
+
+  externalUrl      String?
+  externalCitation String?
+
+  @@index([fragmentId])
+  @@index([type])
+}

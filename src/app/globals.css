@@ -1,0 +1,367 @@
+@import "tailwindcss";
+
+@keyframes accordion-down {
+  from { height: 0; opacity: 0; }
+  to { height: var(--radix-accordion-content-height); opacity: 1; }
+}
+@keyframes accordion-up {
+  from { height: var(--radix-accordion-content-height); opacity: 1; }
+  to { height: 0; opacity: 0; }
+}
+
+@theme {
+  --animate-accordion-down: accordion-down 220ms ease-out;
+  --animate-accordion-up: accordion-up 180ms ease-in;
+  /* Portada */
+  --animate-portada-ticker: portada-ticker 28s linear infinite;
+  --animate-portada-fade-up: portada-fade-up 0.9s cubic-bezier(0.22,1,0.36,1) both;
+  --animate-portada-fade-in: portada-fade-in 0.8s ease both;
+  --animate-portada-pulse: portada-pulse 2.2s ease-in-out infinite;
+  /* Paleta "papel crema": crema + tinta + un único acento granate */
+  --color-paper: #fbfaf4;
+  --color-paper-soft: #f2efe4;
+  --color-ink: #111111;
+  --color-ink-soft: #6b6b6b;
+  --color-accent: #7a2331;
+  --color-accent-soft: #f4e3e6;
+  --color-line: #e5e1d4;
+
+  /* Resaltados para "figuras y tópicos" (color por categoría)
+     Coral=tropo · Verde=topos · Azul=sintaxis · Lila=sonoro */
+  --color-figure-tropo: #f5c4b2;
+  --color-figure-topos: #c4dfb8;
+  --color-figure-sintaxis: #c4d4ec;
+  --color-figure-sonoro: #dcd4ec;
+
+  /* Resaltados de las capas de lectura (sincronizados con los botones del panel lateral)
+     Ámbar=contexto · Violeta=léxico/glosa · Verde=intertexto · Gris=debate */
+  --color-layer-glosa: #e4d8f4;
+  --color-layer-contexto: #fde8a0;
+  --color-layer-intertext: #c8e4c4;
+  --color-layer-preguntas: #e0dbd0;
+
+  /* Franjas de época para la línea de tiempo */
+  --color-era-al-andalus: #e8dcc6;
+  --color-era-edad-media: #dbe3d1;
+  --color-era-prerrenacimiento: #d8e1ea;
+  --color-era-renacimiento: #f1e2ad;
+  --color-era-barroco: #ecd6cd;
+  --color-era-ilustracion: #d6e4cc;
+  --color-era-romanticismo: #ddd2e3;
+  --color-era-modernismo: #ead6d8;
+  --color-era-gen27: #d8d5e6;
+
+  /* Tipografías */
+  --font-serif: var(--font-garamond), Georgia, "Times New Roman", serif;
+  --font-display: var(--font-fraunces), Georgia, "Times New Roman", serif;
+  --font-sans: var(--font-manrope), system-ui, -apple-system, sans-serif;
+  --font-dyslexic: "OpenDyslexic", var(--font-manrope), system-ui, sans-serif;
+}
+
+/* ── Modo oscuro ──────────────────────────────────────────────────────────── */
+html[data-theme="dark"] {
+  --color-paper: #1c1a16;
+  --color-paper-soft: #252219;
+  --color-ink: #ede8d8;
+  --color-ink-soft: #8a7f6a;
+  --color-accent: #d4687a;
+  --color-accent-soft: #3d1c22;
+  --color-line: #302c22;
+
+  --color-era-al-andalus: #3a3025;
+  --color-era-edad-media: #252f26;
+  --color-era-prerrenacimiento: #222b34;
+  --color-era-renacimiento: #3a3320;
+  --color-era-barroco: #352220;
+  --color-era-ilustracion: #253422;
+  --color-era-romanticismo: #2c2835;
+  --color-era-modernismo: #33222a;
+  --color-era-gen27: #252335;
+
+  --color-figure-tropo: #3d1e16;
+  --color-figure-topos: #1a2e18;
+  --color-figure-sintaxis: #182030;
+  --color-figure-sonoro: #24183a;
+
+  --color-layer-glosa: #28183d;
+  --color-layer-contexto: #3a2e08;
+  --color-layer-intertext: #182a18;
+  --color-layer-preguntas: #282520;
+}
+
+/* ── Colores de acento por sección ───────────────────────────────────────── */
+.section-obras        { --color-accent: #b91c1c; --color-accent-soft: #fef2f2; }
+.section-autores      { --color-accent: #0369a1; --color-accent-soft: #f0f9ff; }
+.section-fragmentos   { --color-accent: #047857; --color-accent-soft: #ecfdf5; }
+.section-itinerarios  { --color-accent: #0f766e; --color-accent-soft: #f0fdfa; }
+.section-constelaciones { --color-accent: #7c3aed; --color-accent-soft: #f5f3ff; }
+.section-topicos      { --color-accent: #b45309; --color-accent-soft: #fffbeb; }
+.section-epocas       { --color-accent: #c2410c; --color-accent-soft: #fff7ed; }
+.section-personajes   { --color-accent: #be185d; --color-accent-soft: #fdf2f8; }
+.section-lugares      { --color-accent: #4d7c0f; --color-accent-soft: #f7fee7; }
+.section-buscar       { --color-accent: #475569; --color-accent-soft: #f8fafc; }
+
+html[data-theme="dark"] .section-obras        { --color-accent: #f87171; --color-accent-soft: #2d0f0f; }
+html[data-theme="dark"] .section-autores      { --color-accent: #38bdf8; --color-accent-soft: #0c1e2d; }
+html[data-theme="dark"] .section-fragmentos   { --color-accent: #34d399; --color-accent-soft: #0d2420; }
+html[data-theme="dark"] .section-itinerarios  { --color-accent: #2dd4bf; --color-accent-soft: #0d2424; }
+html[data-theme="dark"] .section-constelaciones { --color-accent: #a78bfa; --color-accent-soft: #1e1535; }
+html[data-theme="dark"] .section-topicos      { --color-accent: #fbbf24; --color-accent-soft: #2d220a; }
+html[data-theme="dark"] .section-epocas       { --color-accent: #fb923c; --color-accent-soft: #2d1508; }
+html[data-theme="dark"] .section-personajes   { --color-accent: #f472b6; --color-accent-soft: #2d0f1e; }
+html[data-theme="dark"] .section-lugares      { --color-accent: #86efac; --color-accent-soft: #0d2018; }
+
+/* Tamaño de letra en tres pasos (conmutador de accesibilidad) */
+html {
+  font-size: 100%;
+}
+html[data-text-size="1"] {
+  font-size: 112%;
+}
+html[data-text-size="2"] {
+  font-size: 125%;
+}
+
+/* Alto contraste */
+html[data-contrast="alto"] {
+  --color-paper: #ffffff;
+  --color-paper-soft: #ffffff;
+  --color-ink: #000000;
+  --color-ink-soft: #000000;
+  --color-line: #000000;
+  --color-accent: #5e1a25;
+  --color-accent-soft: #ffffff;
+}
+
+/* Fuente OpenDyslexic para el texto literario (cuando se añadan los ficheros
+   a /public/fonts, este @font-face quedará activo automáticamente) */
+@font-face {
+  font-family: "OpenDyslexic";
+  src: url("/fonts/OpenDyslexic-Regular.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "OpenDyslexic";
+  src: url("/fonts/OpenDyslexic-Bold.woff2") format("woff2");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+html[data-reading-font="dyslexic"] {
+  --font-sans: var(--font-dyslexic);
+}
+
+body {
+  background: var(--color-paper);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+}
+
+/* Comillas españolas para citas */
+q {
+  quotes: "«" "»" "\2039" "\203A";
+}
+
+/* Texto literario: tipografía cómoda, sin max-width (la controla el layout) */
+.prose-reading {
+  font-family: var(--font-sans);
+  line-height: 1.9;
+  font-size: 1.125rem;
+  white-space: pre-line;
+  letter-spacing: 0.01em;
+}
+
+/* Reinicio visual de los <button> usados como disparadores de anotaciones,
+   para que fluyan como texto en línea dentro del párrafo */
+.annotation-btn {
+  display: inline;
+  background: none;
+  border: none;
+  padding: 0;
+  margin: 0;
+  font: inherit;
+  color: inherit;
+  text-align: inherit;
+  cursor: inherit;
+}
+
+/* Subrayado discreto de puntos para glosas léxicas */
+.gloss-term {
+  text-decoration: underline;
+  text-decoration-style: dotted;
+  text-decoration-color: var(--color-ink-soft);
+  text-underline-offset: 0.2em;
+  cursor: help;
+}
+
+/* Resaltado de figuras y tópicos, por categoría */
+.figure-highlight[data-category="tropo"] {
+  background-color: var(--color-figure-tropo);
+}
+.figure-highlight[data-category="topos"] {
+  background-color: var(--color-figure-topos);
+}
+.figure-highlight[data-category="sintaxis"] {
+  background-color: var(--color-figure-sintaxis);
+}
+.figure-highlight[data-category="sonoro"] {
+  background-color: var(--color-figure-sonoro);
+}
+.figure-highlight {
+  border-radius: 0.2em;
+  cursor: pointer;
+  padding: 0 0.05em;
+  transition: background-color 250ms ease;
+}
+
+/* Resaltado de glosas léxicas (capa "Significado") */
+.gloss-highlight {
+  background-color: var(--color-layer-glosa);
+  border-radius: 0.2em;
+  padding: 0 0.05em;
+  transition: background-color 250ms ease;
+}
+
+/* Resaltado de notas de contexto histórico (capa "Contexto") */
+.context-highlight {
+  background-color: var(--color-layer-contexto);
+  border-radius: 0.2em;
+  padding: 0 0.05em;
+  transition: background-color 250ms ease;
+}
+
+/* Resaltado de enlaces de intertextualidad (capa "Conexiones culturales") */
+.intertext-highlight {
+  background-color: var(--color-layer-intertext);
+  border-radius: 0.2em;
+  padding: 0 0.05em;
+  transition: background-color 250ms ease;
+}
+
+/* Enlaces de intertextualidad */
+.intertext-link {
+  text-decoration: underline;
+  text-decoration-color: var(--color-accent);
+  text-underline-offset: 0.2em;
+  color: inherit;
+}
+
+/* Marcador de contextualización histórica */
+.context-marker {
+  color: var(--color-accent);
+  cursor: pointer;
+  vertical-align: super;
+  font-size: 0.7em;
+  padding: 0 0.1em;
+}
+
+/* ─── Fade-in up (Intersection Observer) ─────────────────────────────────── */
+.fade-up {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.fade-up[data-visible="true"] {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ─── Hard-cut hover (sin transición, cambio instantáneo) ─────────────────── */
+.hard-cut {
+  transition: none !important;
+}
+.hard-cut:hover {
+  background-color: var(--color-ink) !important;
+  color: var(--color-paper) !important;
+}
+
+/* ─── Épocas: tarjeta de arte a sangre completa ───────────────────────────── */
+.era-card {
+  position: relative;
+  overflow: hidden;
+  background-color: var(--color-ink);
+  background-size: cover;
+  background-position: center;
+}
+.era-card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(0,0,0,0.82) 0%, rgba(0,0,0,0.3) 50%, transparent 100%);
+  pointer-events: none;
+}
+.era-card .era-card-text {
+  position: relative;
+  z-index: 1;
+}
+.era-card .era-card-img {
+  position: absolute;
+  inset: -15% 0;
+  width: 100%;
+  height: 130%;
+  object-fit: cover;
+  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.era-card:hover .era-card-img {
+  transform: scale(1.06);
+}
+
+/* ─── Marcador granate para el mapa de lugares (Leaflet divIcon) ─────────── */
+.place-marker {
+  width: 14px;
+  height: 14px;
+  border-radius: 9999px;
+  background-color: var(--color-accent);
+  border: 2px solid var(--color-paper);
+  box-shadow: 0 0 0 1px var(--color-accent);
+}
+
+/* ─── Portada: animaciones ────────────────────────────────────────────────── */
+@keyframes portada-ticker {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+@keyframes portada-fade-up {
+  from { opacity: 0; transform: translateY(28px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes portada-fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+@keyframes portada-pulse {
+  0%, 100% { transform: translateY(0); }
+  50%       { transform: translateY(5px); }
+}
+
+.animate-portada-ticker  { animation: portada-ticker 28s linear infinite; }
+.animate-portada-fade-up { animation: portada-fade-up 0.9s cubic-bezier(0.22,1,0.36,1) both; }
+.animate-portada-fade-in { animation: portada-fade-in 0.8s ease both; }
+.animate-portada-pulse   { animation: portada-pulse 2.2s ease-in-out infinite; }
+
+@media (prefers-reduced-motion: no-preference) {
+  html { scroll-behavior: smooth; }
+}
+
+/* Contenido enriquecido (markdown) de las anotaciones */
+.prose-annotation p {
+  margin: 0 0 0.5em;
+}
+.prose-annotation p:last-child {
+  margin-bottom: 0;
+}
+.prose-annotation strong {
+  font-weight: 600;
+}
+.prose-annotation em {
+  font-style: italic;
+}
+.prose-annotation a {
+  color: var(--color-accent);
+  text-decoration: underline;
+  text-underline-offset: 0.15em;
+}

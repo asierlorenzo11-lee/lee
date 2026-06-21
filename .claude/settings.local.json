@@ -1,0 +1,17 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(dir \"C:\\\\Users\\\\user\\\\LEE\")",
+      "Bash(findstr \"schema\")",
+      "Bash(xargs grep -l \"glosa\\\\|contexto\\\\|figura\")",
+      "Bash(mkdir -p \"C:\\\\Users\\\\user\\\\.claude\\\\plans\" 2>/dev/null; echo ok)",
+      "Bash(npx tsc *)",
+      "Bash(cat .claude/launch.json)",
+      "Bash(ls \"C:\\\\Users\\\\user\\\\AppData\\\\Roaming\\\\npm\")",
+      "Bash(ls \"C:\\\\Program Files\\\\nodejs\")",
+      "PowerShell($env:PATH += \";C:\\\\Program Files\\\\nodejs\"; cd \"C:\\\\Users\\\\user\\\\LEE\"; npx tsc --noEmit 2>&1 | Select-Object -First 80)",
+      "WebSearch",
+      "WebFetch(domain:commons.wikimedia.org)"
+    ]
+  }
+}

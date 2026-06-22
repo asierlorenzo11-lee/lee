@@ -92,6 +92,7 @@ model Fragment {
 
   @@index([workId])
   @@index([status])
+  @@index([status, workId])
 }
 
 model Constellation {
@@ -190,4 +191,5 @@ model Annotation {
 
   @@index([fragmentId])
   @@index([type])
+  @@index([fragmentId, type])
 }

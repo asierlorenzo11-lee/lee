@@ -1,7 +1,7 @@
 "use client";
 import Image from "next/image";
 import Link from "next/link";
-import { useState, useRef, useEffect, useCallback } from "react";
+import { useState, useRef, useEffect, useCallback, useDeferredValue } from "react";
 
 export type AuthorCard = {
   slug: string;
@@ -38,6 +38,7 @@ export function AuthorGalleryClient({
   const [activeEra, setActiveEra] = useState<string | null>(null);
   const [displayed, setDisplayed] = useState<AuthorCard[]>(authors);
   const [q, setQ] = useState("");
+  const deferredQ = useDeferredValue(q);
   const [phase, setPhase] = useState<"in" | "out">("out");
   const timerRef = useRef<ReturnType<typeof setTimeout>>(undefined);
 
@@ -67,7 +68,8 @@ export function AuthorGalleryClient({
 
   useEffect(() => () => clearTimeout(timerRef.current), []);
 
-  const needle = q.trim().toLowerCase();
+  const needle = deferredQ.trim().toLowerCase();
+  const isPending = q !== deferredQ;
   const visible = needle
     ? displayed.filter((a) => a.name.toLowerCase().includes(needle))
     : displayed;
@@ -105,7 +107,10 @@ export function AuthorGalleryClient({
       </div>
 
       {/* ── Portrait grid ──────────────────────────────────────────────────── */}
-      <div className="grid grid-cols-2 gap-x-6 gap-y-10 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
+      <div
+        className="grid grid-cols-2 gap-x-6 gap-y-10 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5"
+        style={{ opacity: isPending ? 0.5 : 1, transition: "opacity 150ms ease" }}
+      >
         {visible.map((author, i) => {
           const delay = i * 32;
           const entering = phase === "in";

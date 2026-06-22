@@ -1,6 +1,6 @@
 "use client";
 import Link from "next/link";
-import { useState, useRef, useEffect, useCallback } from "react";
+import { useState, useRef, useEffect, useCallback, useDeferredValue } from "react";
 
 export type ShelfBook = {
   id: string;
@@ -36,11 +36,13 @@ export function BookshelfClient({
   const [activeEra, setActiveEra] = useState<string | null>(null);
   const [displayed, setDisplayed] = useState<ShelfGroup[]>(groups);
   const [q, setQ] = useState("");
+  const deferredQ = useDeferredValue(q);
   const [phase, setPhase] = useState<"in" | "out">("out");
   const [hoveredBook, setHoveredBook] = useState<HoveredBook | null>(null);
   const timerRef = useRef<ReturnType<typeof setTimeout>>(undefined);
 
-  const needle = q.trim().toLowerCase();
+  const needle = deferredQ.trim().toLowerCase();
+  const isPending = q !== deferredQ;
   const visibleGroups: ShelfGroup[] = needle
     ? [{
         era: "",
@@ -125,7 +127,10 @@ export function BookshelfClient({
       </div>
 
       {/* ── Shelves ────────────────────────────────────────────────────────── */}
-      <div className="space-y-14">
+      <div
+        className="space-y-14"
+        style={{ opacity: isPending ? 0.5 : 1, transition: "opacity 150ms ease" }}
+      >
         {groupsWithStart.map(({ start, ...group }) => (
           <section key={group.era || "__search__"}>
             {!needle && visibleGroups.length > 1 && (

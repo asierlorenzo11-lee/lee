@@ -74,36 +74,37 @@ export function AuthorGalleryClient({
     ? displayed.filter((a) => a.name.toLowerCase().includes(needle))
     : displayed;
 
+  const hasFilter = q || activeEra;
+
   return (
     <div>
-      {/* ── Search ─────────────────────────────────────────────────────────── */}
-      <input
-        type="search"
-        value={q}
-        onChange={(e) => setQ(e.target.value)}
-        placeholder="Buscar por nombre…"
-        className="mb-5 w-full max-w-xs border-2 border-ink bg-paper px-3 py-1.5 text-sm text-ink placeholder:text-ink-soft focus:outline-none"
-      />
-
-      {/* ── Filter chips ───────────────────────────────────────────────────── */}
-      <div className="flex flex-wrap gap-2 mb-8">
-        {[null, ...eras].map((era) => {
-          const active = activeEra === era;
-          return (
-            <button
-              key={era ?? "__all__"}
-              onClick={() => changeFilter(era)}
-              style={{ transition: "none" }}
-              className={`px-3 py-1.5 text-sm font-medium border-2 border-ink ${
-                active
-                  ? "bg-ink text-paper"
-                  : "bg-paper text-ink hover:bg-ink hover:text-paper"
-              }`}
-            >
-              {era ?? "Todos"}
-            </button>
-          );
-        })}
+      {/* ── Filtros ────────────────────────────────────────────────────────── */}
+      <div className="mt-2 flex flex-wrap items-center gap-3 mb-8">
+        <input
+          type="search"
+          value={q}
+          onChange={(e) => setQ(e.target.value)}
+          placeholder="Buscar por nombre…"
+          className="min-w-44 flex-1 rounded-lg border border-line bg-paper py-2 px-3 text-sm text-ink placeholder:text-ink-soft focus:border-accent focus:outline-none"
+        />
+        <select
+          value={activeEra ?? ""}
+          onChange={(e) => changeFilter(e.target.value || null)}
+          className="rounded-lg border border-line bg-paper px-3 py-2 text-sm text-ink-soft focus:border-accent focus:outline-none"
+        >
+          <option value="">Época</option>
+          {eras.map((era) => (
+            <option key={era} value={era}>{era}</option>
+          ))}
+        </select>
+        {hasFilter && (
+          <button
+            onClick={() => { setQ(""); changeFilter(null); }}
+            className="text-sm text-ink-soft hover:text-accent transition-colors"
+          >
+            ✕ Limpiar
+          </button>
+        )}
       </div>
 
       {/* ── Portrait grid ──────────────────────────────────────────────────── */}

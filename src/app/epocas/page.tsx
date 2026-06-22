@@ -33,7 +33,7 @@ export default async function EpocasPage() {
       <div className="mx-auto max-w-5xl px-4 pt-10 pb-4">
         <SectionHeader
           href="/epocas"
-          description="De las jarchas mozárabes a García Lorca: ocho siglos de voces en español."
+          description="8 siglos de voces en español"
         />
       </div>
 

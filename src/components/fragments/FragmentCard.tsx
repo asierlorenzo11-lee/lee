@@ -13,7 +13,7 @@ export function FragmentCard({ fragment }: { fragment: FragmentCardData }) {
         >
           <Image
             src={fragment.artworkImageUrl}
-            alt={fragment.artworkTitle ?? ""}
+            alt={fragment.artworkTitle || `Ilustración para ${fragment.headline}`}
             fill
             sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
             className="object-cover transition-transform duration-500 group-hover:scale-105 group-active:scale-[0.98]"

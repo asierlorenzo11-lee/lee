@@ -83,7 +83,14 @@ export function BookshelfClient({
   useEffect(() => () => clearTimeout(timerRef.current), []);
 
   const totalDisplayed = visibleGroups.reduce((n, g) => n + g.books.length, 0);
-  let bookIdx = 0;
+
+  // Compute cumulative start index per group for entrance animation delays
+  let cumulativeIdx = 0;
+  const groupsWithStart = visibleGroups.map((g) => {
+    const start = cumulativeIdx;
+    cumulativeIdx += g.books.length;
+    return { ...g, start };
+  });
 
   return (
     <div>
@@ -119,7 +126,7 @@ export function BookshelfClient({
 
       {/* ── Shelves ────────────────────────────────────────────────────────── */}
       <div className="space-y-14">
-        {visibleGroups.map((group) => (
+        {groupsWithStart.map(({ start, ...group }) => (
           <section key={group.era || "__search__"}>
             {!needle && visibleGroups.length > 1 && (
               <h2 className="font-display text-lg italic mb-3 text-ink-soft">
@@ -143,8 +150,8 @@ export function BookshelfClient({
                   }}
                 />
 
-                {group.books.map((book) => {
-                  const delay = bookIdx++ * 28;
+                {group.books.map((book, i) => {
+                  const delay = (start + i) * 28;
                   const entering = phase === "in";
                   return (
                     <Link

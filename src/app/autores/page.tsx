@@ -7,8 +7,8 @@ import { AuthorGalleryClient, type AuthorCard } from "@/components/autores/Autho
 import { ERA_META } from "@/lib/eras";
 
 export const metadata: Metadata = {
-  title: "Autores",
-  description: "Los escritores de la antología: poetas, dramaturgos, novelistas y ensayistas de la lengua española, del siglo XI al XIX.",
+  title: "Autoras y autores",
+  description: "Las autoras y autores de la antología: poetas, dramaturgos, novelistas y ensayistas de la lengua española, del siglo XI al XX.",
 };
 
 export default async function AutoresPage() {
@@ -39,7 +39,7 @@ export default async function AutoresPage() {
     <div className="mx-auto max-w-5xl px-4 py-10">
       <SectionHeader
         href="/autores"
-        description="Los escritores de la antología, del siglo XI al XX."
+        description="Las autoras y autores de la antología, del siglo XI al XX."
       />
       <div className="mt-8">
         <AuthorGalleryClient authors={cards} eras={eras} />

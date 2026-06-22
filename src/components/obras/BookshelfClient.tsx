@@ -35,9 +35,24 @@ export function BookshelfClient({
   const allBooks = groups.flatMap((g) => g.books);
   const [activeEra, setActiveEra] = useState<string | null>(null);
   const [displayed, setDisplayed] = useState<ShelfGroup[]>(groups);
+  const [q, setQ] = useState("");
   const [phase, setPhase] = useState<"in" | "out">("out");
   const [hoveredBook, setHoveredBook] = useState<HoveredBook | null>(null);
   const timerRef = useRef<ReturnType<typeof setTimeout>>(undefined);
+
+  const needle = q.trim().toLowerCase();
+  const visibleGroups: ShelfGroup[] = needle
+    ? [{
+        era: "",
+        books: displayed
+          .flatMap((g) => g.books)
+          .filter(
+            (b) =>
+              b.title.toLowerCase().includes(needle) ||
+              b.authorName.toLowerCase().includes(needle),
+          ),
+      }]
+    : displayed;
 
   // Entrance on mount
   useEffect(() => {
@@ -67,11 +82,20 @@ export function BookshelfClient({
 
   useEffect(() => () => clearTimeout(timerRef.current), []);
 
-  const totalDisplayed = displayed.reduce((n, g) => n + g.books.length, 0);
+  const totalDisplayed = visibleGroups.reduce((n, g) => n + g.books.length, 0);
   let bookIdx = 0;
 
   return (
     <div>
+      {/* ── Search ─────────────────────────────────────────────────────────── */}
+      <input
+        type="search"
+        value={q}
+        onChange={(e) => setQ(e.target.value)}
+        placeholder="Buscar por título o autor…"
+        className="mb-5 w-full max-w-xs border-2 border-ink bg-paper px-3 py-1.5 text-sm text-ink placeholder:text-ink-soft focus:outline-none"
+      />
+
       {/* ── Filter chips ───────────────────────────────────────────────────── */}
       <div className="flex flex-wrap gap-2 mb-8">
         {[null, ...eras].map((era) => {
@@ -95,9 +119,9 @@ export function BookshelfClient({
 
       {/* ── Shelves ────────────────────────────────────────────────────────── */}
       <div className="space-y-14">
-        {displayed.map((group) => (
-          <section key={group.era}>
-            {displayed.length > 1 && (
+        {visibleGroups.map((group) => (
+          <section key={group.era || "__search__"}>
+            {!needle && visibleGroups.length > 1 && (
               <h2 className="font-display text-lg italic mb-3 text-ink-soft">
                 {group.era}
               </h2>
@@ -252,7 +276,7 @@ export function BookshelfClient({
         }}
       >
         {totalDisplayed} obra{totalDisplayed !== 1 ? "s" : ""}
-        {activeEra ? ` del ${activeEra}` : " en la antología"}
+        {needle ? ` que coinciden con «${q.trim()}»` : activeEra ? ` del ${activeEra}` : " en la antología"}
       </p>
     </div>
   );

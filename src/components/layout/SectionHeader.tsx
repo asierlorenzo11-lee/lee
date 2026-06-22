@@ -2,8 +2,8 @@ import { getFacet } from "@/lib/facets";
 
 const SECTION_META: Record<string, string> = {
   "/obras":          "estante de libros",
-  "/autores":        "galería de autores",
-  "/fragmentos":     "textos selectos",
+  "/autores":        "galería de autoras y autores",
+  "/fragmentos":     "textos de la antología",
   "/itinerarios":    "recorridos temáticos",
   "/constelaciones": "mapa estelar",
   "/topicos":        "índice temático",

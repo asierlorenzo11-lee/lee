@@ -24,7 +24,7 @@ export type Facet = {
 
 export const FACETS: Facet[] = [
   { href: "/obras",          label: "Obras",          icon: BookOpen,  chipBg: "bg-red-100",    chipColor: "text-red-700",    fillBg: "bg-red-600"    },
-  { href: "/autores",        label: "Autores",        icon: User,       chipBg: "bg-sky-100",    chipColor: "text-sky-700",    fillBg: "bg-sky-600"    },
+  { href: "/autores",        label: "Autoras y autores", icon: User,    chipBg: "bg-sky-100",    chipColor: "text-sky-700",    fillBg: "bg-sky-600"    },
   { href: "/fragmentos",     label: "Fragmentos",     icon: FileText,   chipBg: "bg-emerald-100",chipColor: "text-emerald-700",fillBg: "bg-emerald-600"},
   { href: "/itinerarios",    label: "Itinerarios",    icon: Route,      chipBg: "bg-teal-100",   chipColor: "text-teal-700",   fillBg: "bg-teal-600"   },
   { href: "/constelaciones", label: "Constelaciones", icon: Sparkles,   chipBg: "bg-violet-100", chipColor: "text-violet-700", fillBg: "bg-violet-600" },

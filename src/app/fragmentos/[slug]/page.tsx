@@ -20,7 +20,6 @@ import { PrevNextNav } from "@/components/fragments/PrevNextNav";
 import { ActiveFilterChips } from "@/components/fragments/ActiveFilterChips";
 import { TagsBox } from "@/components/fragments/TagsBox";
 import { ReadingLayersToolbar } from "@/components/reading-settings/ReadingLayersToolbar";
-import { ReadingFontToggle } from "@/components/reading-settings/ReadingFontToggle";
 import { AccessibilityBox } from "@/components/reading-settings/AccessibilityBox";
 import { FragmentReaderLayout } from "@/components/fragments/FragmentReaderLayout";
 import { AnnotationLayerNotes } from "@/components/annotations/AnnotationLayerNotes";
@@ -127,15 +126,10 @@ export default async function FragmentPage({ params, searchParams }: PageProps) 
             Capas de lectura
           </p>
           <p className="mb-3 text-xs text-ink-soft">
-            Activa o desactiva anotaciones: <em>Significado</em> define palabras difíciles, <em>Contexto</em> sitúa el pasaje, <em>Estilo</em> resalta figuras retóricas, <em>Conexiones</em> enlaza con otros textos.
+            Activa o desactiva las anotaciones.
           </p>
           <div className="flex flex-wrap items-center gap-2">
             <ReadingLayersToolbar />
-            {/* Accesibilidad: visible en móvil; en escritorio aparece en la barra lateral */}
-            <span className="text-line select-none lg:hidden">|</span>
-            <div className="lg:hidden">
-              <ReadingFontToggle />
-            </div>
           </div>
         </div>
 

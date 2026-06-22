@@ -55,7 +55,7 @@
   --font-serif: var(--font-garamond), Georgia, "Times New Roman", serif;
   --font-display: var(--font-fraunces), Georgia, "Times New Roman", serif;
   --font-sans: var(--font-manrope), system-ui, -apple-system, sans-serif;
-  --font-dyslexic: "OpenDyslexic", var(--font-manrope), system-ui, sans-serif;
+  --font-dyslexic: "OpenDyslexic", system-ui, sans-serif;
 }
 
 
@@ -123,6 +123,12 @@ html[data-contrast="alto"] {
 html[data-reading-font="dyslexic"] {
   --font-sans: var(--font-dyslexic);
   --font-serif: var(--font-dyslexic);
+}
+
+/* Regla directa (sin cadena de var) para garantizar que OpenDyslexic
+   llega al texto literario aunque Tailwind v4 intercepte la herencia */
+html[data-reading-font="dyslexic"] .prose-reading {
+  font-family: "OpenDyslexic", system-ui, sans-serif;
 }
 
 body {

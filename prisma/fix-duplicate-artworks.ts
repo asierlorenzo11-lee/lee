@@ -184,7 +184,7 @@ const updates: [string, string, string, string, string][] = [
     "/images/artworks/gericault-balsa-medusa.jpg",
     "La balsa de la Medusa",
     "Théodore Géricault (1818–1819)",
-    "Géricault pintó la desesperación de los náufragos que se aferran a un mísero leño en medio del océano: la misma imagen con que Francisco de Aldana cierra su soneto sobre la existencia humana a la deriva de pasiones que no gobernamos.",
+    "Géricault pintó la desesperación de los náufragos que se aferran a un mísero leño en medio del océano: la misma imagen con que el Duque de Rivas cierra su soneto sobre la existencia humana a la deriva de pasiones que no gobernamos.",
   ],
   [
     "don-juan-cementerio-convite",

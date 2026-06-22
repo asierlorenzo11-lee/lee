@@ -77,7 +77,7 @@ export default async function FragmentosPage({ searchParams }: PageProps) {
 
   return (
     <div className="mx-auto max-w-5xl px-4 py-10">
-      <SectionHeader href="/fragmentos" description="textos selectos con anotaciones y cinco capas de lectura." />
+      <SectionHeader href="/fragmentos" description="Los textos de la antología y sus anotaciones." />
 
       <FragmentFilters
         q={q}

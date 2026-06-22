@@ -37,6 +37,7 @@ export function AuthorGalleryClient({
 }) {
   const [activeEra, setActiveEra] = useState<string | null>(null);
   const [displayed, setDisplayed] = useState<AuthorCard[]>(authors);
+  const [q, setQ] = useState("");
   const [phase, setPhase] = useState<"in" | "out">("out");
   const timerRef = useRef<ReturnType<typeof setTimeout>>(undefined);
 
@@ -66,8 +67,22 @@ export function AuthorGalleryClient({
 
   useEffect(() => () => clearTimeout(timerRef.current), []);
 
+  const needle = q.trim().toLowerCase();
+  const visible = needle
+    ? displayed.filter((a) => a.name.toLowerCase().includes(needle))
+    : displayed;
+
   return (
     <div>
+      {/* ── Search ─────────────────────────────────────────────────────────── */}
+      <input
+        type="search"
+        value={q}
+        onChange={(e) => setQ(e.target.value)}
+        placeholder="Buscar por nombre…"
+        className="mb-5 w-full max-w-xs border-2 border-ink bg-paper px-3 py-1.5 text-sm text-ink placeholder:text-ink-soft focus:outline-none"
+      />
+
       {/* ── Filter chips ───────────────────────────────────────────────────── */}
       <div className="flex flex-wrap gap-2 mb-8">
         {[null, ...eras].map((era) => {
@@ -91,7 +106,7 @@ export function AuthorGalleryClient({
 
       {/* ── Portrait grid ──────────────────────────────────────────────────── */}
       <div className="grid grid-cols-2 gap-x-6 gap-y-10 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
-        {displayed.map((author, i) => {
+        {visible.map((author, i) => {
           const delay = i * 32;
           const entering = phase === "in";
           return (
@@ -145,8 +160,8 @@ export function AuthorGalleryClient({
           transition: "opacity 300ms ease",
         }}
       >
-        {displayed.length} autor{displayed.length !== 1 ? "es" : ""}
-        {activeEra ? ` del ${activeEra}` : " en la antología"}
+        {visible.length} autor{visible.length !== 1 ? "es" : ""}
+        {needle ? ` que coinciden con «${q.trim()}»` : activeEra ? ` del ${activeEra}` : " en la antología"}
       </p>
     </div>
   );

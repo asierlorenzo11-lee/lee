@@ -34,7 +34,7 @@ export function FeaturedFragment({ fragment }: { fragment: FragmentCardData }) {
         <div className="relative isolate flex min-h-[60vh] items-end overflow-hidden sm:min-h-[70vh]">
           <Image
             src={fragment.artworkImageUrl}
-            alt={fragment.artworkTitle ?? ""}
+            alt={fragment.artworkTitle || `Imagen para ${fragment.headline}`}
             fill
             priority
             sizes="100vw"

@@ -1,6 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { Search, X } from "lucide-react";
 
 interface FilterGroup {
@@ -72,13 +73,13 @@ export function FragmentFilters({
       ))}
 
       {hasAny && (
-        <a
+        <Link
           href="/fragmentos"
           className="flex items-center gap-1 text-sm text-ink-soft transition-colors hover:text-accent"
         >
           <X size={14} aria-hidden />
           Limpiar
-        </a>
+        </Link>
       )}
     </div>
   );

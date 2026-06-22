@@ -11,7 +11,7 @@ export function ArtworkBlock({ fragment }: { fragment: FragmentDetail }) {
       </p>
       <Image
         src={fragment.artworkImageUrl}
-        alt={fragment.artworkTitle ?? ""}
+        alt={fragment.artworkTitle || `Obra de arte relacionada con ${fragment.headline}`}
         width={800}
         height={500}
         className="h-auto w-full rounded"

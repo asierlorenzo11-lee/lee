@@ -11,7 +11,10 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const { slug } = await params;
   const constellation = await getConstellationBySlug(slug);
   if (!constellation) return {};
-  return { title: constellation.name };
+  return {
+    title: constellation.name,
+    description: `${constellation.fragments.length} fragmentos de la antología ¡LEE! relacionados con la constelación temática «${constellation.name}».`,
+  };
 }
 
 export default async function ConstelacionPage({ params }: PageProps) {

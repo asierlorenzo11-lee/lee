@@ -20,26 +20,14 @@ const SHORT_LABEL: Partial<Record<AnnotationLayer, string>> = {
 export function ReadingLayersToolbar() {
   const { layers, toggleLayer } = useReadingSettings();
 
+  const toggleableLayers = ANNOTATION_LAYERS.filter((l) => l.key !== "preguntas");
+
   return (
     <div className="flex flex-wrap gap-2" role="group" aria-label="Capas de lectura">
-      {ANNOTATION_LAYERS.map(({ key, label }) => {
-        const isFixed = key === "preguntas";
-        const active = isFixed ? true : layers[key];
+      {toggleableLayers.map(({ key, label }) => {
+        const active = layers[key];
         const color = LAYER_COLOR[key];
         const displayLabel = SHORT_LABEL[key] ?? label;
-
-        if (isFixed) {
-          return (
-            <span
-              key={key}
-              title="Comentario: siempre visible"
-              style={{ backgroundColor: color, borderColor: color }}
-              className="inline-flex items-center gap-1.5 rounded-full border px-3 py-2 text-sm font-medium text-ink cursor-default select-none"
-            >
-              {displayLabel}
-            </span>
-          );
-        }
 
         return (
           <button

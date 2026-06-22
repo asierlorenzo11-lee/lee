@@ -1,6 +1,5 @@
 import Link from "next/link";
 import { GlobalSearch } from "./GlobalSearch";
-import { ThemeToggle } from "./ThemeToggle";
 import { NavMenu } from "./NavMenu";
 import { FACETS } from "@/lib/facets";
 
@@ -15,7 +14,6 @@ export function Header() {
         <GlobalSearch />
 
         <div className="ml-auto flex items-center gap-1">
-          <ThemeToggle />
           <NavMenu className="lg:hidden" />
         </div>
       </div>

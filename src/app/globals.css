@@ -58,36 +58,6 @@
   --font-dyslexic: "OpenDyslexic", var(--font-manrope), system-ui, sans-serif;
 }
 
-/* ── Modo oscuro ──────────────────────────────────────────────────────────── */
-html[data-theme="dark"] {
-  --color-paper: #1c1a16;
-  --color-paper-soft: #252219;
-  --color-ink: #ede8d8;
-  --color-ink-soft: #8a7f6a;
-  --color-accent: #d4687a;
-  --color-accent-soft: #3d1c22;
-  --color-line: #302c22;
-
-  --color-era-al-andalus: #3a3025;
-  --color-era-edad-media: #252f26;
-  --color-era-prerrenacimiento: #222b34;
-  --color-era-renacimiento: #3a3320;
-  --color-era-barroco: #352220;
-  --color-era-ilustracion: #253422;
-  --color-era-romanticismo: #2c2835;
-  --color-era-modernismo: #33222a;
-  --color-era-gen27: #252335;
-
-  --color-figure-tropo: #3d1e16;
-  --color-figure-topos: #1a2e18;
-  --color-figure-sintaxis: #182030;
-  --color-figure-sonoro: #24183a;
-
-  --color-layer-glosa: #28183d;
-  --color-layer-contexto: #3a2e08;
-  --color-layer-intertext: #182a18;
-  --color-layer-preguntas: #282520;
-}
 
 /* ── Colores de acento por sección ───────────────────────────────────────── */
 .section-obras        { --color-accent: #b91c1c; --color-accent-soft: #fef2f2; }
@@ -152,6 +122,7 @@ html[data-contrast="alto"] {
 
 html[data-reading-font="dyslexic"] {
   --font-sans: var(--font-dyslexic);
+  --font-serif: var(--font-dyslexic);
 }
 
 body {

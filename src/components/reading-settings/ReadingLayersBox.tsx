@@ -23,7 +23,6 @@ export function ReadingLayersBox() {
   const settings = useReadingSettings();
 
   const toggleable = ANNOTATION_LAYERS.filter((l) => l.key !== "preguntas");
-  const fixed = ANNOTATION_LAYERS.find((l) => l.key === "preguntas")!;
 
   return (
     <section className="rounded-lg border border-line bg-paper-soft p-4">
@@ -35,16 +34,6 @@ export function ReadingLayersBox() {
       </p>
 
       <div className="flex flex-wrap gap-2">
-        {/* Capa fija: Comentario — siempre visible, no se puede desactivar */}
-        <span
-          title={fixed.description}
-          style={ACTIVE_LAYER_STYLE[fixed.key]}
-          className="rounded-full px-3 py-2 text-sm text-ink cursor-default select-none"
-        >
-          {fixed.label}
-        </span>
-
-        {/* Capas activables */}
         {toggleable.map((layer) => {
           const active = settings.layers[layer.key];
           return (

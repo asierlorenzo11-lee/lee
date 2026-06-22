@@ -134,6 +134,19 @@ export const getPublishedFragments = unstable_cache(
   { revalidate: 3600 }
 );
 
+/** Fragmentos por lista de slugs, en el orden dado. */
+export const getFragmentsBySlugs = unstable_cache(
+  async (slugs: string[]) => {
+    const rows = await prisma.fragment.findMany({
+      where: { slug: { in: slugs }, status: "published" },
+      include: fragmentWithWorkInclude,
+    });
+    return slugs.map((s) => rows.find((r) => r.slug === s)).filter(Boolean) as typeof rows;
+  },
+  ["fragments-by-slugs"],
+  { revalidate: 3600 }
+);
+
 // ---------------------------------------------------------------------------
 // Obras
 // ---------------------------------------------------------------------------

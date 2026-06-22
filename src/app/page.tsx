@@ -1,6 +1,6 @@
 import Link from "next/link";
 import type { Metadata } from "next";
-import { getFeaturedFragment, getPublishedFragments } from "@/lib/queries";
+import { getFeaturedFragment, getFragmentsBySlugs } from "@/lib/queries";
 import { FragmentCard } from "@/components/fragments/FragmentCard";
 import { FeaturedFragment } from "@/components/fragments/FeaturedFragment";
 import { FadeUp } from "@/components/ui/FadeUp";
@@ -23,9 +23,18 @@ const TICKER_ITEMS = [
   { text: "Nombrar la muerte",   color: "#2C3E50" },
 ];
 
+const PORTADA_SLUGS = [
+  "jarcha-vaise-meu-corachon",        // El corazón se va antes que tú
+  "jarcha-garid-vos",                  // Mil años de mal de amores
+  "la-batalla-de-don-carnal-y-dona-cuaresma", // Dura está la pelea, de muy mala manera
+  "las-victimas-de-la-injusticia",     // ¡A un viejo de palos das!
+  "nuestras-vidas-son-los-rios",       // Todos los ríos van al mismo mar
+  "el-si-de-las-ninas-desenlace",      // «Esto es lo que se debe fiar en el sí de las niñas»
+];
+
 export default async function Home() {
   const featured = await getFeaturedFragment();
-  const fragments = await getPublishedFragments({ excludeId: featured?.id, take: 6 });
+  const fragments = await getFragmentsBySlugs(PORTADA_SLUGS);
 
   return (
     <div>

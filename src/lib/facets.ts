@@ -8,6 +8,7 @@ import {
   Clock,
   Drama,
   MapPin,
+  Highlighter,
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 
@@ -31,7 +32,8 @@ export const FACETS: Facet[] = [
   { href: "/topicos",        label: "Tópicos",        icon: Tag,        chipBg: "bg-amber-100",  chipColor: "text-amber-700",  fillBg: "bg-amber-600"  },
   { href: "/epocas",         label: "Épocas",         icon: Clock,      chipBg: "bg-orange-100", chipColor: "text-orange-700", fillBg: "bg-orange-600" },
   { href: "/personajes",     label: "Personajes",     icon: Drama,      chipBg: "bg-rose-100",   chipColor: "text-rose-700",   fillBg: "bg-rose-600"   },
-  { href: "/lugares",        label: "Lugares",        icon: MapPin,     chipBg: "bg-lime-100",   chipColor: "text-lime-700",   fillBg: "bg-lime-600"   },
+  { href: "/lugares",        label: "Lugares",        icon: MapPin,       chipBg: "bg-lime-100",    chipColor: "text-lime-700",   fillBg: "bg-lime-600"    },
+  { href: "/figuras",        label: "Figuras",        icon: Highlighter,  chipBg: "bg-pink-100",   chipColor: "text-pink-700",   fillBg: "bg-pink-600"    },
 ];
 
 export function getFacet(href: string): Facet | undefined {

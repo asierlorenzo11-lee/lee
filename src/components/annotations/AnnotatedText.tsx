@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import type { ReactNode } from "react";
 import * as Popover from "@radix-ui/react-popover";
 import { useReadingSettings } from "@/components/reading-settings/ReadingSettingsProvider";
 import {
@@ -12,6 +13,23 @@ import {
 import { AnnotationCard } from "./AnnotationCard";
 import { ContextMarker } from "./ContextMarker";
 import { ContextPanel } from "./ContextPanel";
+
+/** Wraps parenthetical stage directions in <em> for italic rendering. */
+function withStageDirections(text: string): ReactNode {
+  const parts = text.split(/(\([^)]*\))/);
+  if (parts.length === 1) return text;
+  return (
+    <>
+      {parts.map((part, i) =>
+        part.startsWith("(") && part.endsWith(")") ? (
+          <em key={i} className="text-ink-soft">{part}</em>
+        ) : (
+          part || null
+        )
+      )}
+    </>
+  );
+}
 
 export function AnnotatedText({
   text,
@@ -91,7 +109,11 @@ function Segment({
   if (interactive.length === 0) {
     return (
       <>
-        {contextoAnno ? <span className={highlightClass!}>{segment.text}</span> : segment.text}
+        {contextoAnno ? (
+          <span className={highlightClass!}>{withStageDirections(segment.text)}</span>
+        ) : (
+          withStageDirections(segment.text)
+        )}
         {contextoEnd && <ContextMarker annotation={contextoEnd} onOpen={onOpenContext} />}
       </>
     );

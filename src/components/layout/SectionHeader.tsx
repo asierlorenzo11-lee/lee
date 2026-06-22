@@ -11,6 +11,7 @@ const SECTION_META: Record<string, string> = {
   "/personajes":     "índice de personajes",
   "/lugares":        "mapa literario",
   "/buscar":         "búsqueda global",
+  "/figuras":        "recursos de estilo",
 };
 
 export function SectionHeader({

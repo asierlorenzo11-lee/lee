@@ -378,6 +378,34 @@ export async function getItineraryBySlug(slug: string) {
 }
 
 // ---------------------------------------------------------------------------
+// Figuras retóricas
+// ---------------------------------------------------------------------------
+
+export const getFigurasIndex = unstable_cache(
+  async () => {
+    const rows = await prisma.annotation.findMany({
+      where: { type: "figura", category: { not: null } },
+      select: {
+        id: true,
+        category: true,
+        content: true,
+        fragment: {
+          select: {
+            slug: true,
+            headline: true,
+            work: { select: { title: true, author: { select: { name: true } } } },
+          },
+        },
+      },
+      orderBy: [{ category: "asc" }, { order: "asc" }],
+    });
+    return rows;
+  },
+  ["figuras-index"],
+  { revalidate: 3600 }
+);
+
+// ---------------------------------------------------------------------------
 // Tópicos, personajes, constelaciones
 // ---------------------------------------------------------------------------
 

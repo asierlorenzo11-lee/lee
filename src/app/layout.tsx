@@ -1,9 +1,11 @@
 import type { Metadata, Viewport } from "next";
+import Link from "next/link";
 import { EB_Garamond, Fraunces, Manrope } from "next/font/google";
 import "./globals.css";
 import { ReadingSettingsProvider } from "@/components/reading-settings/ReadingSettingsProvider";
 import { Header } from "@/components/layout/Header";
 import { SectionAccentWrapper } from "@/components/layout/SectionAccentWrapper";
+import { SITE_URL } from "@/lib/site-url";
 
 const garamond = EB_Garamond({
   variable: "--font-garamond",
@@ -34,10 +36,7 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-  metadataBase: new URL(
-    process.env.NEXT_PUBLIC_SITE_URL ??
-    (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : "http://localhost:3000")
-  ),
+  metadataBase: new URL(SITE_URL),
   title: {
     default: siteTitle,
     template: "%s · ¡LEE!",
@@ -84,7 +83,13 @@ export default function RootLayout({
             <SectionAccentWrapper>{children}</SectionAccentWrapper>
           </main>
           <footer className="border-t border-line px-4 py-8 text-center text-sm text-ink-soft">
-            <p>¡LEE! Antología digital comentada. Asier Lorenzo García</p>
+            <p>
+              ¡LEE! Antología digital comentada. Asier Lorenzo García
+              {" · "}
+              <Link href="/acerca-de" className="underline hover:text-accent">
+                Acerca de
+              </Link>
+            </p>
           </footer>
         </ReadingSettingsProvider>
       </body>

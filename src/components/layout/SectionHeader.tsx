@@ -12,6 +12,7 @@ const SECTION_META: Record<string, string> = {
   "/lugares":        "mapa literario",
   "/buscar":         "búsqueda global",
   "/figuras":        "recursos de estilo",
+  "/acerca-de":      "metodología",
 };
 
 export function SectionHeader({

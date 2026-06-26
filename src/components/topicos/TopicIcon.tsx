@@ -63,6 +63,28 @@ const ICONS: Record<string, React.ReactNode> = {
       <circle cx="12" cy="17" r="0.8" fill="currentColor" stroke="none"/>
     </svg>
   ),
+  "fortuna-mutabilis": (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+      <circle cx="12" cy="12" r="8"/>
+      <line x1="12" y1="4" x2="12" y2="20"/>
+      <line x1="4" y1="12" x2="20" y2="12"/>
+      <line x1="6.3" y1="6.3" x2="17.7" y2="17.7"/>
+      <line x1="17.7" y1="6.3" x2="6.3" y2="17.7"/>
+    </svg>
+  ),
+  "theatrum-mundi": (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+      <ellipse cx="12" cy="13" rx="7" ry="8"/>
+      <path d="M8.5 10.5c1-1 2-1 3 0"/>
+      <path d="M12.5 10.5c1-1 2-1 3 0"/>
+      <path d="M8 17c2-2 6-2 8 0"/>
+    </svg>
+  ),
+  "omnia-vincit-amor": (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+      <path d="M12 21s-8-5-8-11a4 4 0 0 1 8-1.5 4 4 0 0 1 8 1.5c0 6-8 11-8 11Z"/>
+    </svg>
+  ),
 };
 
 export function TopicIcon({ slug, className = "h-6 w-6" }: { slug: string; className?: string }) {

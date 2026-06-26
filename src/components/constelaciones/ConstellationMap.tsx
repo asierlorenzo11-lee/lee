@@ -124,6 +124,30 @@ const LAYOUTS: Record<string, ConstellationLayout> = {
     ],
     edges: [[0,1],[0,2],[1,3],[2,3],[0,3]],
   },
+  libertad: {
+    cx: 2200, cy: 1150,
+    stars: [
+      { dx: 0, dy: 0 }, { dx: 90, dy: -60 }, { dx: 170, dy: 10 },
+      { dx: 100, dy: 90 }, { dx: -50, dy: 70 },
+    ],
+    edges: [[0,1],[1,2],[2,3],[3,4],[4,0]],
+  },
+  "voz-femenina": {
+    cx: 750, cy: 1250,
+    stars: [
+      { dx: 0, dy: 0 }, { dx: -80, dy: -70 }, { dx: 70, dy: -90 },
+      { dx: 120, dy: 30 }, { dx: 20, dy: 110 }, { dx: -90, dy: 50 },
+    ],
+    edges: [[0,1],[1,2],[2,3],[3,4],[4,5],[5,0],[0,3]],
+  },
+  "escritura-y-creacion": {
+    cx: 200, cy: 550,
+    stars: [
+      { dx: 0, dy: 0 }, { dx: 100, dy: -40 }, { dx: 60, dy: 80 },
+      { dx: -70, dy: 40 },
+    ],
+    edges: [[0,1],[1,2],[2,3],[3,0]],
+  },
 };
 
 const LABEL_OFFSETS: Record<string, { dx: number; dy: number }> = {
@@ -135,6 +159,9 @@ const LABEL_OFFSETS: Record<string, { dx: number; dy: number }> = {
   "honor-y-valor":    { dx: 80,  dy: 175 },
   muerte:             { dx: 40,  dy: 175 },
   poder:              { dx: 20,  dy: 155 },
+  libertad:           { dx: 40,  dy: 160 },
+  "voz-femenina":     { dx: 20,  dy: 180 },
+  "escritura-y-creacion": { dx: 30, dy: 150 },
 };
 
 function seededRand(seed: number) {

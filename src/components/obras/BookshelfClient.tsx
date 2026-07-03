@@ -10,6 +10,8 @@ export type ShelfBook = {
   era: string;
   bg: string;
   text: string;
+  accent: string;
+  decoration: string;
   height: number;
   width: number;
 };
@@ -24,6 +26,131 @@ type HoveredBook = {
   top: number;
   left: number;
 };
+
+function SpineDecoration({ type, accent }: { type: string; accent: string }) {
+  const c = accent;
+  if (type === "plain") return null;
+
+  if (type === "stripes") {
+    return (
+      <>
+        {([0, 1] as const).map((i) => (
+          <span
+            key={i}
+            aria-hidden
+            className="pointer-events-none absolute inset-x-0"
+            style={{ [i === 0 ? "top" : "bottom"]: 0, height: 18 }}
+          >
+            <svg width="100%" height="18" xmlns="http://www.w3.org/2000/svg">
+              <line x1="0" y1="6"  x2="100%" y2="6"  stroke={c} strokeWidth="2.5" strokeLinecap="round" />
+              <line x1="0" y1="13" x2="100%" y2="13" stroke={c} strokeWidth="2.5" strokeLinecap="round" />
+            </svg>
+          </span>
+        ))}
+      </>
+    );
+  }
+
+  if (type === "ornament") {
+    return (
+      <>
+        {([0, 1] as const).map((i) => (
+          <span
+            key={i}
+            aria-hidden
+            className="pointer-events-none absolute inset-x-0"
+            style={{ [i === 0 ? "top" : "bottom"]: 0, height: 26 }}
+          >
+            <svg
+              width="100%" height="26"
+              viewBox="0 0 120 26"
+              preserveAspectRatio="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M0,13 Q15,3 30,13 Q45,23 60,13 Q75,3 90,13 Q105,23 120,13"
+                fill="none" stroke={c} strokeWidth="1.6"
+              />
+              <circle cx="0"   cy="13" r="2.5" fill={c} />
+              <circle cx="120" cy="13" r="2.5" fill={c} />
+            </svg>
+          </span>
+        ))}
+      </>
+    );
+  }
+
+  if (type === "x-cross") {
+    return (
+      <>
+        {([0, 1] as const).map((i) => (
+          <span
+            key={i}
+            aria-hidden
+            className="pointer-events-none absolute inset-x-0"
+            style={{ [i === 0 ? "top" : "bottom"]: 0, height: 32 }}
+          >
+            <svg
+              width="100%" height="32"
+              viewBox="0 0 100 32"
+              preserveAspectRatio="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <rect x="3" y="3" width="94" height="26" fill="none" stroke={c} strokeWidth="1.6" rx="1" />
+              <line x1="3"  y1="3"  x2="97" y2="29" stroke={c} strokeWidth="1.3" />
+              <line x1="97" y1="3"  x2="3"  y2="29" stroke={c} strokeWidth="1.3" />
+              {/* extra sub-diagonals for lattice feel */}
+              <line x1="3"  y1="3"  x2="50" y2="29" stroke={c} strokeWidth="0.7" opacity="0.5" />
+              <line x1="97" y1="3"  x2="50" y2="29" stroke={c} strokeWidth="0.7" opacity="0.5" />
+            </svg>
+          </span>
+        ))}
+      </>
+    );
+  }
+
+  if (type === "band") {
+    return (
+      <span
+        aria-hidden
+        className="pointer-events-none absolute inset-x-0"
+        style={{ top: "43%", height: 12, backgroundColor: c }}
+      />
+    );
+  }
+
+  if (type === "dashes") {
+    return (
+      <>
+        {(["left", "right"] as const).map((side) => (
+          <span
+            key={side}
+            aria-hidden
+            className="pointer-events-none absolute inset-y-0"
+            style={{ [side]: 5, width: 2 }}
+          >
+            <svg width="2" height="100%" xmlns="http://www.w3.org/2000/svg">
+              <line
+                x1="1" y1="0" x2="1" y2="100%"
+                stroke={c} strokeWidth="2" strokeDasharray="5 5"
+              />
+            </svg>
+          </span>
+        ))}
+      </>
+    );
+  }
+
+  return null;
+}
+
+function spinePadding(decoration: string): string {
+  if (decoration === "x-cross")  return "36px 10px";
+  if (decoration === "ornament") return "30px 10px";
+  if (decoration === "stripes")  return "22px 10px";
+  if (decoration === "dashes")   return "10px 14px";
+  return "10px 8px";
+}
 
 export function BookshelfClient({
   groups,
@@ -56,7 +183,6 @@ export function BookshelfClient({
       }]
     : displayed;
 
-  // Entrance on mount
   useEffect(() => {
     const id = requestAnimationFrame(() =>
       requestAnimationFrame(() => setPhase("in")),
@@ -86,7 +212,6 @@ export function BookshelfClient({
 
   const totalDisplayed = visibleGroups.reduce((n, g) => n + g.books.length, 0);
 
-  // Compute cumulative start index per group for entrance animation delays
   let cumulativeIdx = 0;
   const groupsWithStart = visibleGroups.map((g) => {
     const start = cumulativeIdx;
@@ -98,7 +223,7 @@ export function BookshelfClient({
 
   return (
     <div>
-      {/* ── Filtros ────────────────────────────────────────────────────────── */}
+      {/* ── Filtros ─────────────────────────────────────────────────────────── */}
       <div className="mt-2 flex flex-wrap items-center gap-3 mb-8">
         <input
           type="search"
@@ -127,7 +252,7 @@ export function BookshelfClient({
         )}
       </div>
 
-      {/* ── Shelves ────────────────────────────────────────────────────────── */}
+      {/* ── Shelves ─────────────────────────────────────────────────────────── */}
       <div
         className="space-y-14"
         style={{ opacity: isPending ? 0.5 : 1, transition: "opacity 150ms ease" }}
@@ -140,7 +265,6 @@ export function BookshelfClient({
               </h2>
             )}
 
-            {/* Shelf wrapper with overflow + plank */}
             <div className="overflow-x-auto pb-4">
               <div
                 className="relative flex w-fit items-end gap-1.5 shadow-[0_6px_12px_-4px_rgba(0,0,0,0.30)]"
@@ -181,7 +305,7 @@ export function BookshelfClient({
                         width: `${book.width}px`,
                         height: `${book.height}px`,
                         marginBottom: "12px",
-                        padding: "10px 8px",
+                        padding: spinePadding(book.decoration),
                         transform: entering ? "translateY(0)" : "translateY(100px)",
                         opacity: entering ? 1 : 0,
                         transition: entering
@@ -189,16 +313,19 @@ export function BookshelfClient({
                           : "transform 220ms ease 0ms, opacity 180ms ease 0ms",
                       }}
                     >
-                      {/* Subtle highlight on spine edge */}
+                      {/* Decorations */}
+                      <SpineDecoration type={book.decoration} accent={book.accent} />
+
+                      {/* Left-edge highlight */}
                       <span
                         aria-hidden
                         className="pointer-events-none absolute inset-y-0 left-0 w-1.5"
                         style={{
                           background:
-                            "linear-gradient(to right, rgba(255,255,255,0.22) 0%, transparent 100%)",
+                            "linear-gradient(to right, rgba(255,255,255,0.20) 0%, transparent 100%)",
                         }}
                       />
-                      {/* Subtle shadow on right spine edge */}
+                      {/* Right-edge shadow */}
                       <span
                         aria-hidden
                         className="pointer-events-none absolute inset-y-0 right-0 w-1"
@@ -207,6 +334,7 @@ export function BookshelfClient({
                             "linear-gradient(to left, rgba(0,0,0,0.15) 0%, transparent 100%)",
                         }}
                       />
+
                       <span
                         className="relative font-display text-[13px] font-bold leading-snug"
                         style={{
@@ -239,7 +367,7 @@ export function BookshelfClient({
         ))}
       </div>
 
-      {/* ── Hover tooltip (fixed, outside overflow containers) ─────────────── */}
+      {/* ── Hover tooltip ───────────────────────────────────────────────────── */}
       {hoveredBook && (
         <div
           className="fixed z-50 pointer-events-none"
@@ -266,7 +394,6 @@ export function BookshelfClient({
               {hoveredBook.book.authorName}
             </p>
           </div>
-          {/* Arrow pointing down */}
           <div
             className="mx-auto"
             style={{
@@ -280,7 +407,7 @@ export function BookshelfClient({
         </div>
       )}
 
-      {/* ── Count ──────────────────────────────────────────────────────────── */}
+      {/* ── Count ───────────────────────────────────────────────────────────── */}
       <p
         className="mt-6 text-sm text-ink-soft"
         style={{

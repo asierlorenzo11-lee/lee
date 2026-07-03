@@ -10,21 +10,25 @@ export const metadata: Metadata = {
   description: "Las obras de la antología de literatura española, organizadas por época: del Cantar de Mio Cid al siglo XX.",
 };
 
-const SPINE_COLORS: { bg: string; text: string }[] = [
-  { bg: "#6f93b8", text: "var(--color-paper)" },
-  { bg: "#e8c468", text: "var(--color-ink)" },
-  { bg: "#e3a6a1", text: "var(--color-ink)" },
-  { bg: "#4fada6", text: "var(--color-paper)" },
-  { bg: "#a8bd84", text: "var(--color-ink)" },
-  { bg: "#e8966a", text: "var(--color-ink)" },
-  { bg: "#8f7aa8", text: "var(--color-paper)" },
-  { bg: "#c4b66f", text: "var(--color-ink)" },
-  { bg: "#d6938a", text: "var(--color-ink)" },
-  { bg: "#7a8a99", text: "var(--color-paper)" },
+type SpineStyle = { bg: string; text: string; accent: string; decoration: string };
+
+const SPINE_STYLES: SpineStyle[] = [
+  { bg: "#3B9E97", text: "#FFFFFF",  accent: "#FFFFFF",  decoration: "stripes"  },
+  { bg: "#F2C340", text: "#1A1A18",  accent: "#1A1A18",  decoration: "plain"    },
+  { bg: "#8E9FD0", text: "#FFFFFF",  accent: "#C8D5FF",  decoration: "plain"    },
+  { bg: "#EDE4C8", text: "#3A2C1A",  accent: "#B89A6A",  decoration: "ornament" },
+  { bg: "#DC5128", text: "#FFFFFF",  accent: "#FFFFFF",  decoration: "x-cross"  },
+  { bg: "#1E1E2A", text: "#F0F0F8",  accent: "#50505F",  decoration: "plain"    },
+  { bg: "#CAD636", text: "#1A1A18",  accent: "#3B9E97",  decoration: "band"     },
+  { bg: "#F4AAAA", text: "#1A1A18",  accent: "#1A1A18",  decoration: "dashes"   },
+  { bg: "#5574BC", text: "#FFFFFF",  accent: "#AABBEE",  decoration: "stripes"  },
+  { bg: "#C47350", text: "#FFFFFF",  accent: "#FFD8B0",  decoration: "ornament" },
+  { bg: "#8A6DAF", text: "#FFFFFF",  accent: "#D4C4F4",  decoration: "stripes"  },
+  { bg: "#5A9E62", text: "#FFFFFF",  accent: "#BBEECC",  decoration: "x-cross"  },
 ];
 
-const SPINE_HEIGHTS = [232, 268, 208, 284, 244, 224];
-const SPINE_WIDTHS  = [88, 100, 80, 96, 108];
+const SPINE_HEIGHTS = [232, 268, 208, 284, 244, 220, 256];
+const SPINE_WIDTHS  = [86, 100, 78, 96, 108, 82];
 
 export default async function ObrasPage() {
   const eras = await getEras();
@@ -34,13 +38,14 @@ export default async function ObrasPage() {
     era: group.era,
     books: group.works.map((work): ShelfBook => {
       const i = nextIdx++;
+      const style = SPINE_STYLES[i % SPINE_STYLES.length];
       return {
         id: work.id,
         slug: work.slug,
         title: work.title,
         authorName: work.author.name,
         era: group.era,
-        ...SPINE_COLORS[i % SPINE_COLORS.length],
+        ...style,
         height: SPINE_HEIGHTS[i % SPINE_HEIGHTS.length],
         width:  SPINE_WIDTHS[i % SPINE_WIDTHS.length],
       };

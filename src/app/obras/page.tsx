@@ -42,44 +42,6 @@ const SPINE_STYLES: SpineStyle[] = [
 const SPINE_HEIGHTS = [232, 268, 208, 284, 244, 220, 256, 236, 248, 216];
 const SPINE_WIDTHS  = [86, 100, 78, 96, 108, 82, 92, 74, 104];
 
-function getWorkSymbol(slug: string): string {
-  // Theater / Drama
-  if (/celestina|fuenteovejuna|perib|burlador|vida-es-sue|si-de-las-ni|don-juan-tenorio|don-alvaro|valor-agravio|morat/.test(slug)) return "mascara";
-  // Epic / Chivalric / War
-  if (/mio-cid|romancero-viejo|amadis|cantar-de/.test(slug)) return "espada";
-  // Prose fiction / Picaresque / Tales
-  if (/quijote|lazarillo|buscon|lucanor|enganos|sendebar/.test(slug)) return "libro";
-  // Religious / Mystic cross
-  if (/santo-domingo|milagros-de|santa-teresa|san-juan-evan/.test(slug)) return "cruz";
-  // Night / Dreams / Moon
-  if (/noche-oscura|vida-es-sue|cartas-marruecas|cadalso/.test(slug)) return "luna";
-  // Death / Elegy / Flame
-  if (/coplas-a-la-muerte|danza-de|danza-general|lamento|llanto/.test(slug)) return "llama";
-  // Mystic fire
-  if (/poesia-san-juan|llama-de-amor|cantico-espiritual/.test(slug)) return "llama";
-  // Oral / Musical / Wave
-  if (/jarchas|cantigas|villancicos|canso|moaxaja/.test(slug)) return "ola";
-  // Cosmology / Fortune / Stars
-  if (/lapidario|ochava|laberinto-de-fortuna|planeta/.test(slug)) return "estrella";
-  // Courtly love / Heart
-  if (/carcel-de-amor|libro-de-buen-amor|cancionero-general-florencia|cantigas-de-amor/.test(slug)) return "corazon";
-  // Satire / Prose / Quill
-  if (/satiras|letrillas|el-parnaso|articulos-de|larra|quevedo-sue/.test(slug)) return "pluma";
-  // Pastoral / Nature / Leaf
-  if (/eglog|soledades-gong|serranillas/.test(slug)) return "hoja";
-  // Divine light / Sun
-  if (/fray-luis|poesia-fray|noche-serena/.test(slug)) return "sol";
-  // Romantic elegy / Tear
-  if (/becquer|rimas-leyendas|estudiante-de-sal|espronceda/.test(slug)) return "lagrima";
-  // Romantic passion / Flame
-  if (/don-alvaro|duque-de-rivas|rivas/.test(slug)) return "llama";
-  // Nobility / Crown
-  if (/don-juan-tenorio|zorrilla|caro-de|corona/.test(slug)) return "corona";
-  // Scroll / Written letters
-  if (/epistola|tratado|manuscrito|corbacho/.test(slug)) return "pergamino";
-  // Default: music note (lyric poetry)
-  return "lira";
-}
 
 export default async function ObrasPage() {
   const eras = await getEras();
@@ -99,7 +61,6 @@ export default async function ObrasPage() {
         ...style,
         height: SPINE_HEIGHTS[i % SPINE_HEIGHTS.length],
         width:  SPINE_WIDTHS[i % SPINE_WIDTHS.length],
-        symbol: getWorkSymbol(work.slug),
       };
     }),
   }));

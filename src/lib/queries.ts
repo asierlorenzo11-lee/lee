@@ -557,6 +557,7 @@ export const getConstellationsForMap = unstable_cache(
   async () => {
     const raw = await prisma.constellation.findMany({
       include: {
+        _count: { select: { fragments: { where: { status: "published" } } } },
         fragments: {
           where: { status: "published" },
           select: {
@@ -573,6 +574,7 @@ export const getConstellationsForMap = unstable_cache(
     return raw.map((c) => ({
       slug: c.slug,
       name: c.name,
+      totalFragments: c._count.fragments,
       fragments: c.fragments.map((f) => ({
         slug: f.slug,
         title: f.title,

@@ -35,12 +35,8 @@ function SpineDecoration({ type, accent }: { type: string; accent: string }) {
     return (
       <>
         {([0, 1] as const).map((i) => (
-          <span
-            key={i}
-            aria-hidden
-            className="pointer-events-none absolute inset-x-0"
-            style={{ [i === 0 ? "top" : "bottom"]: 0, height: 18 }}
-          >
+          <span key={i} aria-hidden className="pointer-events-none absolute inset-x-0"
+                style={{ [i === 0 ? "top" : "bottom"]: 0, height: 18 }}>
             <svg width="100%" height="18" xmlns="http://www.w3.org/2000/svg">
               <line x1="0" y1="6"  x2="100%" y2="6"  stroke={c} strokeWidth="2.5" strokeLinecap="round" />
               <line x1="0" y1="13" x2="100%" y2="13" stroke={c} strokeWidth="2.5" strokeLinecap="round" />
@@ -55,22 +51,12 @@ function SpineDecoration({ type, accent }: { type: string; accent: string }) {
     return (
       <>
         {([0, 1] as const).map((i) => (
-          <span
-            key={i}
-            aria-hidden
-            className="pointer-events-none absolute inset-x-0"
-            style={{ [i === 0 ? "top" : "bottom"]: 0, height: 26 }}
-          >
-            <svg
-              width="100%" height="26"
-              viewBox="0 0 120 26"
-              preserveAspectRatio="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                d="M0,13 Q15,3 30,13 Q45,23 60,13 Q75,3 90,13 Q105,23 120,13"
-                fill="none" stroke={c} strokeWidth="1.6"
-              />
+          <span key={i} aria-hidden className="pointer-events-none absolute inset-x-0"
+                style={{ [i === 0 ? "top" : "bottom"]: 0, height: 26 }}>
+            <svg width="100%" height="26" viewBox="0 0 120 26" preserveAspectRatio="none"
+                 xmlns="http://www.w3.org/2000/svg">
+              <path d="M0,13 Q15,3 30,13 Q45,23 60,13 Q75,3 90,13 Q105,23 120,13"
+                    fill="none" stroke={c} strokeWidth="1.6" />
               <circle cx="0"   cy="13" r="2.5" fill={c} />
               <circle cx="120" cy="13" r="2.5" fill={c} />
             </svg>
@@ -84,22 +70,13 @@ function SpineDecoration({ type, accent }: { type: string; accent: string }) {
     return (
       <>
         {([0, 1] as const).map((i) => (
-          <span
-            key={i}
-            aria-hidden
-            className="pointer-events-none absolute inset-x-0"
-            style={{ [i === 0 ? "top" : "bottom"]: 0, height: 32 }}
-          >
-            <svg
-              width="100%" height="32"
-              viewBox="0 0 100 32"
-              preserveAspectRatio="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
+          <span key={i} aria-hidden className="pointer-events-none absolute inset-x-0"
+                style={{ [i === 0 ? "top" : "bottom"]: 0, height: 32 }}>
+            <svg width="100%" height="32" viewBox="0 0 100 32" preserveAspectRatio="none"
+                 xmlns="http://www.w3.org/2000/svg">
               <rect x="3" y="3" width="94" height="26" fill="none" stroke={c} strokeWidth="1.6" rx="1" />
               <line x1="3"  y1="3"  x2="97" y2="29" stroke={c} strokeWidth="1.3" />
               <line x1="97" y1="3"  x2="3"  y2="29" stroke={c} strokeWidth="1.3" />
-              {/* extra sub-diagonals for lattice feel */}
               <line x1="3"  y1="3"  x2="50" y2="29" stroke={c} strokeWidth="0.7" opacity="0.5" />
               <line x1="97" y1="3"  x2="50" y2="29" stroke={c} strokeWidth="0.7" opacity="0.5" />
             </svg>
@@ -111,11 +88,8 @@ function SpineDecoration({ type, accent }: { type: string; accent: string }) {
 
   if (type === "band") {
     return (
-      <span
-        aria-hidden
-        className="pointer-events-none absolute inset-x-0"
-        style={{ top: "43%", height: 12, backgroundColor: c }}
-      />
+      <span aria-hidden className="pointer-events-none absolute inset-x-0"
+            style={{ top: "43%", height: 12, backgroundColor: c }} />
     );
   }
 
@@ -123,17 +97,10 @@ function SpineDecoration({ type, accent }: { type: string; accent: string }) {
     return (
       <>
         {(["left", "right"] as const).map((side) => (
-          <span
-            key={side}
-            aria-hidden
-            className="pointer-events-none absolute inset-y-0"
-            style={{ [side]: 5, width: 2 }}
-          >
+          <span key={side} aria-hidden className="pointer-events-none absolute inset-y-0"
+                style={{ [side]: 5, width: 2 }}>
             <svg width="2" height="100%" xmlns="http://www.w3.org/2000/svg">
-              <line
-                x1="1" y1="0" x2="1" y2="100%"
-                stroke={c} strokeWidth="2" strokeDasharray="5 5"
-              />
+              <line x1="1" y1="0" x2="1" y2="100%" stroke={c} strokeWidth="2" strokeDasharray="5 5" />
             </svg>
           </span>
         ))}
@@ -141,14 +108,88 @@ function SpineDecoration({ type, accent }: { type: string; accent: string }) {
     );
   }
 
+  if (type === "border") {
+    return (
+      <span aria-hidden className="pointer-events-none absolute"
+            style={{ top: 5, right: 5, bottom: 5, left: 5,
+                     border: `1.5px solid ${c}`, borderRadius: 2 }} />
+    );
+  }
+
+  if (type === "zigzag") {
+    return (
+      <>
+        {([0, 1] as const).map((i) => (
+          <span key={i} aria-hidden className="pointer-events-none absolute inset-x-0"
+                style={{ [i === 0 ? "top" : "bottom"]: 0, height: 14 }}>
+            <svg width="100%" height="14" viewBox="0 0 120 14" preserveAspectRatio="none"
+                 xmlns="http://www.w3.org/2000/svg">
+              <polyline
+                points="0,14 10,0 20,14 30,0 40,14 50,0 60,14 70,0 80,14 90,0 100,14 110,0 120,14"
+                fill="none" stroke={c} strokeWidth="2" strokeLinejoin="round" strokeLinecap="round" />
+            </svg>
+          </span>
+        ))}
+      </>
+    );
+  }
+
+  if (type === "dots") {
+    return (
+      <>
+        {([0, 1] as const).map((i) => (
+          <span key={i} aria-hidden className="pointer-events-none absolute inset-x-0"
+                style={{ [i === 0 ? "top" : "bottom"]: 0, height: 14 }}>
+            <svg width="100%" height="14" viewBox="0 0 120 14" preserveAspectRatio="none"
+                 xmlns="http://www.w3.org/2000/svg">
+              {[8, 22, 36, 50, 64, 78, 92, 106].map((x) => (
+                <circle key={x} cx={x} cy="7" r="3.5" fill={c} />
+              ))}
+            </svg>
+          </span>
+        ))}
+      </>
+    );
+  }
+
+  if (type === "corner-brackets") {
+    return (
+      <>
+        <span aria-hidden className="pointer-events-none absolute"
+              style={{ top: 5, left: 5, right: 5, height: 14,
+                       borderTop: `2px solid ${c}`, borderLeft: `2px solid ${c}`, borderRight: `2px solid ${c}` }} />
+        <span aria-hidden className="pointer-events-none absolute"
+              style={{ bottom: 5, left: 5, right: 5, height: 14,
+                       borderBottom: `2px solid ${c}`, borderLeft: `2px solid ${c}`, borderRight: `2px solid ${c}` }} />
+      </>
+    );
+  }
+
+  if (type === "diamond") {
+    return (
+      <span aria-hidden className="pointer-events-none absolute inset-x-0"
+            style={{ top: "50%", transform: "translateY(-50%)", height: 24 }}>
+        <svg width="100%" height="24" viewBox="0 0 100 24"
+             preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg">
+          <polygon points="50,1 65,12 50,23 35,12" fill="none" stroke={c} strokeWidth="1.8" />
+          <polygon points="50,6 60,12 50,18 40,12" fill={c} opacity="0.35" />
+        </svg>
+      </span>
+    );
+  }
+
   return null;
 }
 
 function spinePadding(decoration: string): string {
-  if (decoration === "x-cross")  return "36px 10px";
-  if (decoration === "ornament") return "30px 10px";
-  if (decoration === "stripes")  return "22px 10px";
-  if (decoration === "dashes")   return "10px 14px";
+  if (decoration === "x-cross")         return "38px 10px";
+  if (decoration === "ornament")        return "30px 10px";
+  if (decoration === "stripes")         return "22px 10px";
+  if (decoration === "zigzag")          return "18px 10px";
+  if (decoration === "dots")            return "18px 10px";
+  if (decoration === "corner-brackets") return "22px 10px";
+  if (decoration === "dashes")          return "10px 14px";
+  if (decoration === "border")          return "14px 16px";
   return "10px 8px";
 }
 

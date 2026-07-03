@@ -31,10 +31,55 @@ const SPINE_STYLES: SpineStyle[] = [
   { bg: "#D88A20", text: "#FFFFFF",  accent: "#FFF0B0",  decoration: "diamond"         },
   { bg: "#A06880", text: "#FFFFFF",  accent: "#FFD0E4",  decoration: "border"          },
   { bg: "#3A4A7A", text: "#F0F0FF",  accent: "#B8C8FF",  decoration: "dots"            },
+  { bg: "#2D6B4A", text: "#FFFFFF",  accent: "#A0F0C0",  decoration: "stripes"         },
+  { bg: "#7A3A1E", text: "#FFFFFF",  accent: "#FFD0A0",  decoration: "ornament"        },
+  { bg: "#4A6A8A", text: "#FFFFFF",  accent: "#C0E0FF",  decoration: "zigzag"          },
+  { bg: "#E8C4A0", text: "#3A2818",  accent: "#8A6040",  decoration: "corner-brackets" },
+  { bg: "#6A3A7A", text: "#FFFFFF",  accent: "#E0C8FF",  decoration: "x-cross"         },
+  { bg: "#C8A820", text: "#1A1A18",  accent: "#1A1A18",  decoration: "band"            },
 ];
 
-const SPINE_HEIGHTS = [232, 268, 208, 284, 244, 220, 256, 236];
-const SPINE_WIDTHS  = [86, 100, 78, 96, 108, 82, 92];
+const SPINE_HEIGHTS = [232, 268, 208, 284, 244, 220, 256, 236, 248, 216];
+const SPINE_WIDTHS  = [86, 100, 78, 96, 108, 82, 92, 74, 104];
+
+function getWorkSymbol(slug: string): string {
+  // Theater / Drama
+  if (/celestina|fuenteovejuna|perib|burlador|vida-es-sue|si-de-las-ni|don-juan-tenorio|don-alvaro|valor-agravio|morat/.test(slug)) return "mascara";
+  // Epic / Chivalric / War
+  if (/mio-cid|romancero-viejo|amadis|cantar-de/.test(slug)) return "espada";
+  // Prose fiction / Picaresque / Tales
+  if (/quijote|lazarillo|buscon|lucanor|enganos|sendebar/.test(slug)) return "libro";
+  // Religious / Mystic cross
+  if (/santo-domingo|milagros-de|santa-teresa|san-juan-evan/.test(slug)) return "cruz";
+  // Night / Dreams / Moon
+  if (/noche-oscura|vida-es-sue|cartas-marruecas|cadalso/.test(slug)) return "luna";
+  // Death / Elegy / Flame
+  if (/coplas-a-la-muerte|danza-de|danza-general|lamento|llanto/.test(slug)) return "llama";
+  // Mystic fire
+  if (/poesia-san-juan|llama-de-amor|cantico-espiritual/.test(slug)) return "llama";
+  // Oral / Musical / Wave
+  if (/jarchas|cantigas|villancicos|canso|moaxaja/.test(slug)) return "ola";
+  // Cosmology / Fortune / Stars
+  if (/lapidario|ochava|laberinto-de-fortuna|planeta/.test(slug)) return "estrella";
+  // Courtly love / Heart
+  if (/carcel-de-amor|libro-de-buen-amor|cancionero-general-florencia|cantigas-de-amor/.test(slug)) return "corazon";
+  // Satire / Prose / Quill
+  if (/satiras|letrillas|el-parnaso|articulos-de|larra|quevedo-sue/.test(slug)) return "pluma";
+  // Pastoral / Nature / Leaf
+  if (/eglog|soledades-gong|serranillas/.test(slug)) return "hoja";
+  // Divine light / Sun
+  if (/fray-luis|poesia-fray|noche-serena/.test(slug)) return "sol";
+  // Romantic elegy / Tear
+  if (/becquer|rimas-leyendas|estudiante-de-sal|espronceda/.test(slug)) return "lagrima";
+  // Romantic passion / Flame
+  if (/don-alvaro|duque-de-rivas|rivas/.test(slug)) return "llama";
+  // Nobility / Crown
+  if (/don-juan-tenorio|zorrilla|caro-de|corona/.test(slug)) return "corona";
+  // Scroll / Written letters
+  if (/epistola|tratado|manuscrito|corbacho/.test(slug)) return "pergamino";
+  // Default: music note (lyric poetry)
+  return "lira";
+}
 
 export default async function ObrasPage() {
   const eras = await getEras();
@@ -54,6 +99,7 @@ export default async function ObrasPage() {
         ...style,
         height: SPINE_HEIGHTS[i % SPINE_HEIGHTS.length],
         width:  SPINE_WIDTHS[i % SPINE_WIDTHS.length],
+        symbol: getWorkSymbol(work.slug),
       };
     }),
   }));

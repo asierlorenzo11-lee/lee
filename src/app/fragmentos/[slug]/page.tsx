@@ -94,7 +94,7 @@ export default async function FragmentPage({ params, searchParams }: PageProps) 
             {fragment.headline}
           </h1>
           <p className="mt-4 text-sm text-ink-soft leading-relaxed">
-            <span className="font-medium text-ink">{fragment.title}</span>
+            <span className="font-medium text-ink uppercase tracking-wide">{fragment.title}</span>
             <span className="mx-1.5 text-ink-soft/40">—</span>
             <Link
               href={`/obras/${fragment.work.slug}`}

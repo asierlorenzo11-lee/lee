@@ -40,6 +40,13 @@ const SPINE_STYLES: SpineStyle[] = [
 ];
 
 const SPINE_HEIGHTS = [232, 268, 208, 284, 244, 220, 256, 236, 248, 216];
+
+const SPINE_TITLE: Record<string, string> = {
+  "lazarillo-de-tormes":          "Lazarillo de Tormes",
+  "don-quijote-de-la-mancha":     "Don Quijote de la Mancha",
+  "memoria-espectaculos-publicos": "Memoria sobre espectáculos",
+  "cartas-politico-economicas":   "Cartas político-económicas al Conde de Lerena",
+};
 const SPINE_WIDTHS  = [86, 100, 78, 96, 108, 82, 92, 74, 104];
 
 
@@ -56,6 +63,7 @@ export default async function ObrasPage() {
         id: work.id,
         slug: work.slug,
         title: work.title,
+        spineTitle: SPINE_TITLE[work.slug],
         authorName: work.author.name,
         era: group.era,
         ...style,

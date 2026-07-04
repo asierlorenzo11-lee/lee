@@ -28,7 +28,8 @@ export function FragmentCard({ fragment }: { fragment: FragmentCardData }) {
       </Link>
       <p className="text-sm leading-relaxed text-ink-soft">{excerpt(fragment.text, 160)}</p>
       <p className="text-xs text-ink-soft">
-        {fragment.title} — <em>{fragment.work.title}</em>, {fragment.work.author.name}
+        <span className="uppercase tracking-wide">{fragment.title}</span>
+        {" — "}<em>{fragment.work.title}</em>, {fragment.work.author.name}
       </p>
     </article>
   );

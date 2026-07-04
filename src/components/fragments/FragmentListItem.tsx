@@ -19,7 +19,7 @@ export function FragmentListItem({
         <p className="text-xs tracking-wide text-ink-soft uppercase">{location}</p>
         <p className="font-serif text-lg italic text-ink group-hover:text-accent">{headline}</p>
         <p className="text-sm text-ink-soft">
-          {title}
+          <span className="uppercase tracking-wide">{title}</span>
           {meta ? ` — ${meta}` : ""}
         </p>
       </Link>

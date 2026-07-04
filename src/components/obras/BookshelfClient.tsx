@@ -6,6 +6,7 @@ export type ShelfBook = {
   id: string;
   slug: string;
   title: string;
+  spineTitle?: string;
   authorName: string;
   era: string;
   bg: string;
@@ -387,7 +388,7 @@ export function BookshelfClient({
                           WebkitBoxOrient: "vertical",
                         }}
                       >
-                        {book.title}
+                        {book.spineTitle ?? book.title}
                       </span>
                       <span
                         className="relative text-[10px] tracking-wider uppercase font-medium"

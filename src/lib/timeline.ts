@@ -5,8 +5,7 @@ export const TIMELINE_END = 1945;
 
 /** Periodos aproximados (para autores anónimos sin fechas de nacimiento/muerte). */
 export const ERA_RANGES: Record<string, [number, number]> = {
-  "Al-Ándalus": [1000, 1250],
-  "Edad Media": [1150, 1480],
+  "Edad Media": [1000, 1480],
   "Prerrenacimiento": [1450, 1500],
   Renacimiento: [1499, 1600],
   Barroco: [1600, 1700],
@@ -17,7 +16,6 @@ export const ERA_RANGES: Record<string, [number, number]> = {
 };
 
 export const ERA_COLORS: Record<string, string> = {
-  "Al-Ándalus": "var(--color-era-al-andalus)",
   "Edad Media": "var(--color-era-edad-media)",
   "Prerrenacimiento": "var(--color-era-prerrenacimiento)",
   Renacimiento: "var(--color-era-renacimiento)",

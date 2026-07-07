@@ -283,7 +283,6 @@ export const getAuthorsWithFragments = unstable_cache(
 );
 
 const ERA_ORDER = [
-  "Al-Ándalus",
   "Edad Media",
   "Prerrenacimiento",
   "Renacimiento",

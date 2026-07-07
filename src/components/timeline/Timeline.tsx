@@ -25,7 +25,6 @@ const CENTURY_NUMERALS: Record<number, string> = {
 };
 
 const ERA_LABELS: [string, string][] = [
-  ["Al-Ándalus", "era-al-andalus"],
   ["Edad Media", "era-edad-media"],
   ["Prerrenacimiento", "era-prerrenacimiento"],
   ["Renacimiento", "era-renacimiento"],

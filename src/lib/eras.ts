@@ -8,11 +8,6 @@ export type EraMeta = {
 
 export const ERA_META: EraMeta[] = [
   {
-    label: "Al-Ándalus",
-    dateRange: "s. VIII–XV",
-    slug: "al-andalus",
-  },
-  {
     label: "Edad Media",
     dateRange: "s. XI–XV",
     slug: "edad-media",

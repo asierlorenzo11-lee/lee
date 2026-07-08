@@ -22,6 +22,8 @@ const CENTURY_NUMERALS: Record<number, string> = {
   1600: "XVII",
   1700: "XVIII",
   1800: "XIX",
+  1900: "XX",
+  2000: "XXI",
 };
 
 const ERA_LABELS: [string, string][] = [
@@ -29,7 +31,11 @@ const ERA_LABELS: [string, string][] = [
   ["Prerrenacimiento", "era-prerrenacimiento"],
   ["Renacimiento", "era-renacimiento"],
   ["Barroco", "era-barroco"],
+  ["Ilustración", "era-ilustracion"],
   ["Romanticismo", "era-romanticismo"],
+  ["Modernismo", "era-modernismo"],
+  ["Generación del 27", "era-gen27"],
+  ["Siglo XX", "era-siglo-xx"],
 ];
 
 function yearToX(year: number) {
@@ -91,7 +97,7 @@ export function Timeline({
           width={width}
           height={height}
           role="img"
-          aria-label="Línea de tiempo de autores y fragmentos, del siglo XI al XIX"
+          aria-label="Línea de tiempo de autores y fragmentos, del siglo XI al XXI"
           className="min-w-[900px]"
         >
           {/* Century grid lines */}

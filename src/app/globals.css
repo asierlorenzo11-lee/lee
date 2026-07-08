@@ -49,6 +49,7 @@
   --color-era-romanticismo: #ddd2e3;
   --color-era-modernismo: #ead6d8;
   --color-era-gen27: #d8d5e6;
+  --color-era-siglo-xx: #d4e4dc;
 
   /* Tipografías */
   --font-serif: var(--font-garamond), Georgia, "Times New Roman", serif;

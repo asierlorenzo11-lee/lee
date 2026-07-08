@@ -1,7 +1,7 @@
 import type { getTimelineData } from "./queries";
 
 export const TIMELINE_START = 1000;
-export const TIMELINE_END = 1945;
+export const TIMELINE_END = 2025;
 
 /** Periodos aproximados (para autores anónimos sin fechas de nacimiento/muerte). */
 export const ERA_RANGES: Record<string, [number, number]> = {
@@ -13,6 +13,7 @@ export const ERA_RANGES: Record<string, [number, number]> = {
   Romanticismo: [1800, 1875],
   Modernismo: [1870, 1910],
   "Generación del 27": [1910, 1945],
+  "Siglo XX": [1920, 2025],
 };
 
 export const ERA_COLORS: Record<string, string> = {
@@ -24,6 +25,7 @@ export const ERA_COLORS: Record<string, string> = {
   Romanticismo: "var(--color-era-romanticismo)",
   Modernismo: "var(--color-era-modernismo)",
   "Generación del 27": "var(--color-era-gen27)",
+  "Siglo XX": "var(--color-era-siglo-xx)",
 };
 
 const FALLBACK_COLOR = "var(--color-line)";

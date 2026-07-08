@@ -50,6 +50,11 @@ export const ERA_META: EraMeta[] = [
     slug: "generacion-del-27",
     overrideImage: "/images/artworks/van-gogh-noche-estrellada.jpg",
   },
+  {
+    label: "Siglo XX",
+    dateRange: "s. XX–XXI",
+    slug: "siglo-xx",
+  },
 ];
 
 export function getEraMeta(era: string): EraMeta | undefined {

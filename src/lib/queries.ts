@@ -291,6 +291,7 @@ const ERA_ORDER = [
   "Romanticismo",
   "Modernismo",
   "Generación del 27",
+  "Siglo XX",
 ];
 
 export async function getErasWithFragments(): Promise<{ slug: string; name: string }[]> {

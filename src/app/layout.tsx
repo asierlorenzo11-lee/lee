@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import Link from "next/link";
 import { EB_Garamond, Fraunces, Manrope } from "next/font/google";
+import { Analytics } from "@vercel/analytics/next";
 import "./globals.css";
 import { ReadingSettingsProvider } from "@/components/reading-settings/ReadingSettingsProvider";
 import { Header } from "@/components/layout/Header";
@@ -92,6 +93,7 @@ export default function RootLayout({
             </p>
           </footer>
         </ReadingSettingsProvider>
+        <Analytics />
       </body>
     </html>
   );

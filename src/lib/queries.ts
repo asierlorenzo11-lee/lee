@@ -57,6 +57,7 @@ export async function getItineraryNeighbors(itinerarySlug: string, fragmentId: s
     include: {
       items: {
         orderBy: { order: "asc" },
+        where: { fragment: { status: "published" } },
         include: {
           fragment: { select: { id: true, slug: true, title: true, headline: true } },
         },
@@ -119,33 +120,37 @@ export const getFeaturedFragment = unstable_cache(
 );
 
 /** Fragmentos publicados para el mosaico de la portada (o catálogos generales). */
-export const getPublishedFragments = unstable_cache(
-  async (options?: { excludeId?: string; take?: number }) =>
-    prisma.fragment.findMany({
-      where: {
-        status: "published",
-        ...(options?.excludeId ? { id: { not: options.excludeId } } : {}),
-      },
-      orderBy: [{ work: { year: "asc" } }, { order: "asc" }],
-      take: options?.take,
-      include: fragmentWithWorkInclude,
-    }),
-  ["published-fragments"],
-  { revalidate: 3600 }
-);
+export function getPublishedFragments(options?: { excludeId?: string; take?: number }) {
+  return unstable_cache(
+    () =>
+      prisma.fragment.findMany({
+        where: {
+          status: "published",
+          ...(options?.excludeId ? { id: { not: options.excludeId } } : {}),
+        },
+        orderBy: [{ work: { year: "asc" } }, { order: "asc" }],
+        take: options?.take,
+        include: fragmentWithWorkInclude,
+      }),
+    ["published-fragments", JSON.stringify(options ?? {})],
+    { revalidate: 3600 }
+  )();
+}
 
 /** Fragmentos por lista de slugs, en el orden dado. */
-export const getFragmentsBySlugs = unstable_cache(
-  async (slugs: string[]) => {
-    const rows = await prisma.fragment.findMany({
-      where: { slug: { in: slugs }, status: "published" },
-      include: fragmentWithWorkInclude,
-    });
-    return slugs.map((s) => rows.find((r) => r.slug === s)).filter(Boolean) as typeof rows;
-  },
-  ["fragments-by-slugs"],
-  { revalidate: 3600 }
-);
+export function getFragmentsBySlugs(slugs: string[]) {
+  return unstable_cache(
+    async () => {
+      const rows = await prisma.fragment.findMany({
+        where: { slug: { in: slugs }, status: "published" },
+        include: fragmentWithWorkInclude,
+      });
+      return slugs.map((s) => rows.find((r) => r.slug === s)).filter(Boolean) as typeof rows;
+    },
+    ["fragments-by-slugs", JSON.stringify(slugs)],
+    { revalidate: 3600 }
+  )();
+}
 
 // ---------------------------------------------------------------------------
 // Obras
@@ -245,28 +250,29 @@ export interface FragmentIndexFilters {
   itinerario?: string;
 }
 
-export async function getFragmentsIndex(filters: FragmentIndexFilters) {
-  const cacheKey = JSON.stringify(filters);
+const _getFragmentsIndexFn = (filters: FragmentIndexFilters) =>
+  prisma.fragment.findMany({
+    where: {
+      status: "published",
+      ...(filters.constelacion
+        ? { constellations: { some: { slug: filters.constelacion } } }
+        : {}),
+      ...(filters.topico ? { topics: { some: { slug: filters.topico } } } : {}),
+      ...(filters.personaje ? { characters: { some: { slug: filters.personaje } } } : {}),
+      ...(filters.autor ? { work: { author: { slug: filters.autor } } } : {}),
+      ...(filters.epoca ? { work: { author: { era: filters.epoca } } } : {}),
+      ...(filters.itinerario
+        ? { itineraryItems: { some: { itinerary: { slug: filters.itinerario } } } }
+        : {}),
+    },
+    orderBy: [{ work: { year: "asc" } }, { order: "asc" }],
+    include: fragmentWithWorkInclude,
+  });
+
+export function getFragmentsIndex(filters: FragmentIndexFilters) {
   return unstable_cache(
-    () =>
-      prisma.fragment.findMany({
-        where: {
-          status: "published",
-          ...(filters.constelacion
-            ? { constellations: { some: { slug: filters.constelacion } } }
-            : {}),
-          ...(filters.topico ? { topics: { some: { slug: filters.topico } } } : {}),
-          ...(filters.personaje ? { characters: { some: { slug: filters.personaje } } } : {}),
-          ...(filters.autor ? { work: { author: { slug: filters.autor } } } : {}),
-          ...(filters.epoca ? { work: { author: { era: filters.epoca } } } : {}),
-          ...(filters.itinerario
-            ? { itineraryItems: { some: { itinerary: { slug: filters.itinerario } } } }
-            : {}),
-        },
-        orderBy: [{ work: { year: "asc" } }, { order: "asc" }],
-        include: fragmentWithWorkInclude,
-      }),
-    ["fragments-index", cacheKey],
+    () => _getFragmentsIndexFn(filters),
+    ["fragments-index", JSON.stringify(filters)],
     { revalidate: 3600 }
   )();
 }
@@ -294,20 +300,28 @@ const ERA_ORDER = [
   "Siglo XX",
 ];
 
-export async function getErasWithFragments(): Promise<{ slug: string; name: string }[]> {
-  const rows = await prisma.author.findMany({
-    where: {
-      era: { not: null },
-      works: { some: { fragments: { some: { status: "published" } } } },
-    },
-    select: { era: true },
-    distinct: ["era"],
-  });
-  return rows
-    .filter((r) => r.era)
-    .map((r) => ({ slug: r.era!, name: r.era! }))
-    .sort((a, b) => ERA_ORDER.indexOf(a.name) - ERA_ORDER.indexOf(b.name));
-}
+export const getErasWithFragments = unstable_cache(
+  async (): Promise<{ slug: string; name: string }[]> => {
+    const rows = await prisma.author.findMany({
+      where: {
+        era: { not: null },
+        works: { some: { fragments: { some: { status: "published" } } } },
+      },
+      select: { era: true },
+      distinct: ["era"],
+    });
+    return rows
+      .filter((r) => r.era)
+      .map((r) => ({ slug: r.era!, name: r.era! }))
+      .sort((a, b) => {
+        const ia = ERA_ORDER.indexOf(a.name);
+        const ib = ERA_ORDER.indexOf(b.name);
+        return (ia === -1 ? Infinity : ia) - (ib === -1 ? Infinity : ib);
+      });
+  },
+  ["eras-with-fragments"],
+  { revalidate: 3600 }
+);
 
 // ---------------------------------------------------------------------------
 // Itinerarios
@@ -371,6 +385,7 @@ export async function getItineraryBySlug(slug: string) {
     include: {
       items: {
         orderBy: { order: "asc" },
+        where: { fragment: { status: "published" } },
         include: { fragment: { include: { work: { include: { author: true } } } } },
       },
     },

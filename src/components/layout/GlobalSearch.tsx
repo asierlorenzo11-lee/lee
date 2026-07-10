@@ -74,6 +74,7 @@ export function GlobalSearch() {
     timerRef.current = setTimeout(async () => {
       try {
         const res = await fetch(`/api/search?q=${encodeURIComponent(q.trim())}`);
+        if (!res.ok) throw new Error("Search failed");
         setResults(await res.json());
       } finally {
         setLoading(false);

@@ -46,6 +46,7 @@ export function FragmentFilters({
           className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-ink-soft"
         />
         <input
+          key={q}
           type="search"
           name="q"
           defaultValue={q}
